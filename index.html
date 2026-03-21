@@ -6,8 +6,8 @@
 <title>CareGate — SNF Admissions</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}
-body{background:#f5f5f7;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.screen{display:none;width:100%;max-width:680px;background:#fff;border-radius:12px;box-shadow:0 2px 20px rgba(0,0,0,.1);padding:36px 40px}
+body{background:#f5f5f7;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px}
+.screen{display:none;width:100%;max-width:760px;background:#fff;border-radius:12px;box-shadow:0 2px 20px rgba(0,0,0,.1);padding:32px 36px}
 .screen.active{display:block}
 h1{font-size:1.6rem;color:#534AB7;margin-bottom:4px}
 h2{font-size:1.2rem;color:#1a1a2e;margin-bottom:20px}
@@ -17,21 +17,15 @@ input,select,textarea{width:100%;padding:9px 12px;border:1px solid #d0d0d8;borde
 input:focus,select:focus{border-color:#534AB7}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .hipaa{background:#f0f0ff;border-left:3px solid #534AB7;padding:10px 14px;font-size:.8rem;color:#444;border-radius:0 6px 6px 0;margin-top:18px}
-.nav{display:flex;justify-content:space-between;margin-top:28px}
-.btn{padding:10px 24px;border:none;border-radius:6px;font-size:.9rem;font-weight:600;cursor:pointer}
+.nav{display:flex;justify-content:space-between;margin-top:28px;align-items:center}
+.btn{padding:10px 24px;border:none;border-radius:6px;font-size:.9rem;font-weight:600;cursor:pointer;transition:opacity .15s}
 .btn-primary{background:#534AB7;color:#fff}
 .btn-primary:hover{background:#4239a0}
+.btn-primary:disabled{opacity:.4;cursor:default}
 .btn-secondary{background:#e8e8f0;color:#534AB7}
 .btn-secondary:hover{background:#d8d8e8}
-/* Screen 3 – Loading */
-.dots{display:flex;gap:32px;justify-content:center;margin:32px 0}
-.dot-item{display:flex;flex-direction:column;align-items:center;gap:10px}
-.dot{width:20px;height:20px;border-radius:50%;background:#d0d0d8;transition:background .4s}
-.dot.active{background:#534AB7;box-shadow:0 0 12px #534AB733}
-.dot.done{background:#0F6E56}
-.dot-label{font-size:.8rem;color:#555;font-weight:600}
-.progress-msg{text-align:center;color:#666;font-size:.9rem;min-height:22px}
-/* Screen 4 – Results */
+
+/* ── Screen 4 – Results ── */
 .verdict{padding:16px 20px;border-radius:8px;text-align:center;font-size:1.2rem;font-weight:700;letter-spacing:.04em;margin-bottom:20px}
 .verdict.eligible{background:#d4f0e6;color:#0F6E56;border:2px solid #0F6E56}
 .verdict.action{background:#fff4d4;color:#a06000;border:2px solid #e0a000}
@@ -45,20 +39,23 @@ input:focus,select:focus{border-color:#534AB7}
 .action-box{background:#f0f0ff;border-radius:8px;padding:14px 18px;margin-top:16px}
 .action-box h3{font-size:.95rem;color:#534AB7;margin-bottom:8px}
 .action-box li{font-size:.85rem;color:#444;margin-left:16px;margin-bottom:4px}
-/* Screen 5 – HITL */
+
+/* ── Screen 5 – HITL ── */
 .reason-box{background:#f8f8fc;border-radius:8px;padding:14px 18px;font-size:.85rem;color:#444;line-height:1.6;margin-bottom:18px}
 .check-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #eee}
 .check-row input[type=checkbox]{width:16px;height:16px;accent-color:#534AB7}
 .check-row span{font-size:.88rem;color:#333}
 .sig-row{display:flex;gap:12px;margin-top:16px;align-items:flex-end}
 .sig-row input{flex:1}
-/* Screen 6 – Confirmation */
+
+/* ── Screen 6 – Confirmation ── */
 .ref-badge{background:#534AB7;color:#fff;font-size:1.4rem;font-weight:700;letter-spacing:.06em;padding:14px 24px;border-radius:8px;text-align:center;margin:18px 0}
 .audit{background:#f8f8fc;border-radius:8px;padding:12px 16px;font-size:.82rem;color:#555;line-height:1.8}
 .audit span{font-weight:600;color:#333}
-/* Screen 7 – Dashboard */
-.timer{text-align:right;font-size:.82rem;color:#888;margin-bottom:16px}
-.timer b{color:#534AB7}
+
+/* ── Screen 7 – Dashboard ── */
+.timer-bar{text-align:right;font-size:.82rem;color:#888;margin-bottom:16px}
+.timer-bar b{color:#534AB7}
 .lanes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
 .lane{border-radius:8px;padding:14px}
 .lane h3{font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
@@ -68,11 +65,82 @@ input:focus,select:focus{border-color:#534AB7}
 .pt-card{background:#fff;border-radius:6px;padding:10px 12px;margin-bottom:8px;font-size:.82rem;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 .pt-card .pt-name{font-weight:700;color:#1a1a2e;margin-bottom:2px}
 .pt-card .pt-meta{color:#666}
+
+/* ════════════════════════════════
+   SCREEN 3 — NEW STYLES
+   ════════════════════════════════ */
+.s3-selector{background:#f8f8fc;border:1px solid #e0e0ea;border-radius:10px;padding:14px 16px;margin-bottom:18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.s3-selector-label{font-size:.85rem;font-weight:700;color:#444;white-space:nowrap}
+.s3-select{flex:1;min-width:220px;padding:8px 12px;border:1px solid #d0d0d8;border-radius:7px;font-size:.88rem;color:#222;background:#fff;cursor:pointer;outline:none}
+.s3-select:focus{border-color:#534AB7}
+.s3-run-btn{padding:9px 20px;background:#534AB7;color:#fff;border:none;border-radius:7px;font-size:.88rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.s3-run-btn:hover{background:#4239a0}
+.s3-run-btn:disabled{opacity:.4;cursor:default}
+
+.patient-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;background:#f0f0ff;border-radius:8px;padding:12px 16px}
+.ps-item .ps-lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#888;margin-bottom:3px}
+.ps-item .ps-val{font-size:.88rem;font-weight:600;color:#1a1a2e}
+
+.s3-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+@media(max-width:600px){.s3-cols{grid-template-columns:1fr}.patient-strip{grid-template-columns:repeat(2,1fr)}}
+
+.s3-panel{border:1px solid #e0e0ea;border-radius:10px;overflow:hidden}
+.s3-panel-head{padding:9px 14px;background:#fafafa;border-bottom:1px solid #e0e0ea;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#888}
+.s3-panel-body{padding:12px 14px}
+
+/* progress bar */
+.s3-progress-wrap{height:4px;background:#e0e0ea;margin:0 14px 0}
+.s3-progress-bar{height:4px;background:#534AB7;width:0%;transition:width .5s;border-radius:2px}
+
+/* wave badge */
+.wave-badge{display:flex;align-items:center;gap:7px;padding:7px 14px;background:#eeecfc;font-size:.75rem;color:#3C3489;font-weight:600;border-bottom:1px solid #e0e0ea}
+.wave-badge-dot{width:7px;height:7px;border-radius:50%;background:#534AB7;flex-shrink:0}
+
+/* system rows */
+.s3-sys-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f0f0f0}
+.s3-sys-row:last-child{border-bottom:none}
+.s3-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;transition:background .4s}
+.s3-dot.idle    {background:#d0d0d8}
+.s3-dot.checking{background:#e0a000;animation:sdpulse 1s infinite}
+.s3-dot.pass    {background:#0F6E56}
+.s3-dot.fail    {background:#c0392b}
+.s3-dot.warn    {background:#e0a000}
+@keyframes sdpulse{0%,100%{opacity:1}50%{opacity:.35}}
+.s3-sys-name{font-size:.82rem;font-weight:700;color:#222;min-width:108px}
+.s3-sys-check{font-size:.78rem;color:#888;flex:1;font-style:italic}
+.s3-sys-tag{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:12px;white-space:nowrap;text-transform:uppercase}
+.s3-sys-tag.idle    {background:#f0f0f0;color:#888}
+.s3-sys-tag.checking{background:#fff4d4;color:#a06000}
+.s3-sys-tag.pass    {background:#d4f0e6;color:#0F6E56}
+.s3-sys-tag.fail    {background:#fde8e8;color:#c0392b}
+.s3-sys-tag.warn    {background:#fff4d4;color:#a06000}
+
+/* log panel */
+.s3-log-body{padding:10px 14px;min-height:240px;max-height:300px;overflow-y:auto}
+.s3-log-entry{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid rgba(0,0,0,.04);opacity:0;transform:translateY(3px);transition:opacity .3s,transform .3s}
+.s3-log-entry.vis{opacity:1;transform:translateY(0)}
+.s3-log-entry:last-child{border-bottom:none}
+.s3-log-time{font-size:.7rem;font-family:monospace;color:#aaa;min-width:52px;margin-top:1px}
+.s3-log-icon{font-size:.78rem;min-width:14px;margin-top:1px}
+.s3-log-text{font-size:.8rem;color:#555;line-height:1.5;flex:1}
+.s3-log-text strong{color:#222;font-weight:700}
+.s3-log-text .ptag{color:#0F6E56;font-weight:700}
+.s3-log-text .ftag{color:#c0392b;font-weight:700}
+.s3-log-text .wtag{color:#a06000;font-weight:700}
+.s3-log-text .rtag{color:#534AB7;font-style:italic;font-size:.75rem}
+
+.s3-idle{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;color:#bbb;font-size:.85rem;gap:8px;text-align:center}
+
+/* view results btn row */
+.s3-result-row{display:flex;justify-content:flex-end;opacity:0;transition:opacity .5s;pointer-events:none}
+.s3-result-row.vis{opacity:1;pointer-events:all}
+.s3-view-btn{padding:11px 28px;background:#0F6E56;color:#fff;border:none;border-radius:8px;font-size:.92rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px}
+.s3-view-btn:hover{background:#085041}
 </style>
 </head>
 <body>
 
-<!-- S1: Login -->
+<!-- ══ S1: Login ══ -->
 <div class="screen active" id="s1">
   <h1>CareGate</h1>
   <h2>Sunrise Skilled Nursing Facility</h2>
@@ -95,7 +163,7 @@ input:focus,select:focus{border-color:#534AB7}
   <div class="nav"><span></span><button class="btn btn-primary" onclick="go(2)">Sign In →</button></div>
 </div>
 
-<!-- S2: Intake -->
+<!-- ══ S2: Intake ══ -->
 <div class="screen" id="s2">
   <h1>Patient Intake</h1>
   <p class="subtitle">New Admission Request · Sunrise SNF</p>
@@ -131,24 +199,103 @@ input:focus,select:focus{border-color:#534AB7}
   </div>
 </div>
 
-<!-- S3: Loading -->
+<!-- ══ S3: Eligibility Check (NEW) ══ -->
 <div class="screen" id="s3">
   <h1>Eligibility Check</h1>
-  <p class="subtitle">Querying external systems…</p>
-  <div class="dots">
-    <div class="dot-item"><div class="dot" id="d0"></div><div class="dot-label">CMS</div></div>
-    <div class="dot-item"><div class="dot" id="d1"></div><div class="dot-label">AMD</div></div>
-    <div class="dot-item"><div class="dot" id="d2"></div><div class="dot-label">Insurance</div></div>
-    <div class="dot-item"><div class="dot" id="d3"></div><div class="dot-label">PCC</div></div>
+  <p class="subtitle">Select a scenario and run the live eligibility check</p>
+
+  <!-- Scenario dropdown -->
+  <div class="s3-selector">
+    <span class="s3-selector-label">Demo scenario:</span>
+    <select class="s3-select" id="scenarioSelect" onchange="onScenarioChange()">
+      <option value="">— Select a scenario to demonstrate —</option>
+      <option value="eligible">Fully eligible — Margaret Okafor · Medicare A · Hip fracture</option>
+      <option value="action">Action required — Carol Simmons · UHC PPO · CHF (2 blockers)</option>
+      <option value="blocked">Hard blocked — Patricia Dunn · Humana HMO · Lapsed coverage + OON</option>
+    </select>
+    <button class="s3-run-btn" id="runBtn" onclick="runCheck()" disabled>Run check</button>
   </div>
-  <p class="progress-msg" id="pmsg">Connecting to CMS…</p>
-  <div class="nav" id="s3nav" style="display:none">
+
+  <!-- Patient strip (hidden until scenario selected) -->
+  <div class="patient-strip" id="patientStrip" style="display:none">
+    <div class="ps-item"><div class="ps-lbl">Patient</div><div class="ps-val" id="psName">—</div></div>
+    <div class="ps-item"><div class="ps-lbl">Payer</div><div class="ps-val" id="psPayer">—</div></div>
+    <div class="ps-item"><div class="ps-lbl">Diagnosis</div><div class="ps-val" id="psDx">—</div></div>
+    <div class="ps-item"><div class="ps-lbl">Care level</div><div class="ps-val" id="psCare">—</div></div>
+  </div>
+
+  <!-- Two column: system status | AI log -->
+  <div class="s3-cols">
+
+    <!-- Left: system status panel -->
+    <div class="s3-panel">
+      <div class="s3-panel-head">System queries — live status</div>
+      <div class="s3-progress-wrap"><div class="s3-progress-bar" id="s3progress"></div></div>
+
+      <div class="wave-badge" id="wave1badge" style="display:none">
+        <div class="wave-badge-dot"></div>Wave 1 — CMS &amp; AMD in parallel
+      </div>
+
+      <div class="s3-panel-body">
+        <div class="s3-sys-row">
+          <div class="s3-dot idle" id="dot-cms"></div>
+          <div class="s3-sys-name">CMS — Medicare</div>
+          <div class="s3-sys-check" id="chk-cms">Waiting...</div>
+          <div class="s3-sys-tag idle" id="tag-cms">Idle</div>
+        </div>
+        <div class="s3-sys-row">
+          <div class="s3-dot idle" id="dot-amd"></div>
+          <div class="s3-sys-name">AMD — Physician</div>
+          <div class="s3-sys-check" id="chk-amd">Waiting...</div>
+          <div class="s3-sys-tag idle" id="tag-amd">Idle</div>
+        </div>
+      </div>
+
+      <div class="wave-badge" id="wave2badge" style="display:none;margin-top:2px">
+        <div class="wave-badge-dot"></div>Wave 2 — Insurance &amp; PCC in parallel
+      </div>
+
+      <div class="s3-panel-body" style="padding-top:4px">
+        <div class="s3-sys-row">
+          <div class="s3-dot idle" id="dot-ins"></div>
+          <div class="s3-sys-name">Insurance</div>
+          <div class="s3-sys-check" id="chk-ins">Queued for Wave 2...</div>
+          <div class="s3-sys-tag idle" id="tag-ins">Queued</div>
+        </div>
+        <div class="s3-sys-row">
+          <div class="s3-dot idle" id="dot-pcc"></div>
+          <div class="s3-sys-name">PCC — Beds</div>
+          <div class="s3-sys-check" id="chk-pcc">Queued for Wave 2...</div>
+          <div class="s3-sys-tag idle" id="tag-pcc">Queued</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: AI reasoning log -->
+    <div class="s3-panel">
+      <div class="s3-panel-head">AI reasoning log — eligibility rules applied</div>
+      <div class="s3-log-body" id="logBody">
+        <div class="s3-idle" id="idleMsg">
+          <div style="font-size:1.4rem;opacity:.3">◎</div>
+          <div>Select a scenario above and click Run check</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- View Results button — appears after check completes -->
+  <div class="s3-result-row" id="resultRow">
+    <button class="s3-view-btn" onclick="go(4)">View eligibility results →</button>
+  </div>
+
+  <div class="nav" style="margin-top:16px">
     <button class="btn btn-secondary" onclick="go(2)">← Back</button>
-    <button class="btn btn-primary" onclick="go(4)">View Results →</button>
+    <span style="font-size:.8rem;color:#aaa">Results button appears after check completes</span>
   </div>
 </div>
 
-<!-- S4: Results -->
+<!-- ══ S4: Results ══ -->
 <div class="screen" id="s4">
   <h1>Eligibility Results</h1>
   <p class="subtitle">Margaret Thornton · MRN SNF-2026-084729</p>
@@ -171,7 +318,7 @@ input:focus,select:focus{border-color:#534AB7}
   </div>
 </div>
 
-<!-- S5: HITL Review -->
+<!-- ══ S5: HITL Review ══ -->
 <div class="screen" id="s5">
   <h1>Human-in-the-Loop Review</h1>
   <p class="subtitle">AI Reasoning Summary</p>
@@ -199,11 +346,11 @@ input:focus,select:focus{border-color:#534AB7}
   </div>
   <div class="nav">
     <button class="btn btn-secondary" onclick="go(4)">← Back</button>
-    <button class="btn btn-primary" onclick="go(6)">Approve & Confirm →</button>
+    <button class="btn btn-primary" onclick="go(6)">Approve &amp; Confirm →</button>
   </div>
 </div>
 
-<!-- S6: Confirmation -->
+<!-- ══ S6: Confirmation ══ -->
 <div class="screen" id="s6">
   <h1>Admission Confirmed</h1>
   <p class="subtitle">Sunrise Skilled Nursing Facility</p>
@@ -225,10 +372,10 @@ input:focus,select:focus{border-color:#534AB7}
   </div>
 </div>
 
-<!-- S7: Dashboard -->
+<!-- ══ S7: Dashboard ══ -->
 <div class="screen" id="s7">
   <h1>Referral Dashboard</h1>
-  <div class="timer">Session: <b id="timer">00:00</b></div>
+  <div class="timer-bar">Session: <b id="timer">00:00</b></div>
   <div class="lanes">
     <div class="lane ready">
       <h3>Ready to Admit</h3>
@@ -254,34 +401,15 @@ input:focus,select:focus{border-color:#534AB7}
 </div>
 
 <script>
+/* ── Navigation ── */
 function go(n){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('s'+n).classList.add('active');
-  if(n===3) runLoader();
+  window.scrollTo(0,0);
   if(n===7) startTimer();
 }
 
-function runLoader(){
-  const msgs=['Connecting to CMS…','Querying AMD prior auth…','Verifying insurance coverage…','Syncing PCC care plan…','Analysis complete.'];
-  const dots=[0,1,2,3];
-  let i=0;
-  dots.forEach(d=>{ document.getElementById('d'+d).className='dot'; });
-  document.getElementById('pmsg').textContent=msgs[0];
-  document.getElementById('s3nav').style.display='none';
-  function step(){
-    if(i<4){
-      const d=document.getElementById('d'+i);
-      d.classList.add('active');
-      document.getElementById('pmsg').textContent=msgs[i+1];
-      setTimeout(()=>{ d.classList.remove('active'); d.classList.add('done'); i++; step(); },900);
-    } else {
-      document.getElementById('pmsg').textContent=msgs[4];
-      document.getElementById('s3nav').style.display='flex';
-    }
-  }
-  setTimeout(step,400);
-}
-
+/* ── Dashboard timer ── */
 let timerInterval;
 function startTimer(){
   clearInterval(timerInterval);
@@ -289,10 +417,223 @@ function startTimer(){
   const el=document.getElementById('timer');
   timerInterval=setInterval(()=>{
     secs++;
-    const m=String(Math.floor(secs/60)).padStart(2,'0');
-    const s=String(secs%60).padStart(2,'0');
-    el.textContent=m+':'+s;
+    el.textContent=String(Math.floor(secs/60)).padStart(2,'0')+':'+String(secs%60).padStart(2,'0');
   },1000);
+}
+
+/* ══════════════════════════════════
+   SCREEN 3 — SCENARIO DATA & LOGIC
+   ══════════════════════════════════ */
+const SCENARIOS = {
+  eligible:{
+    name:'Margaret Okafor', payer:'Medicare Part A', dx:'S72.001A — Hip fracture', care:'SNF skilled PT/OT',
+    sys:{
+      cms:{check:'Verifying Part A status, benefit period & qualifying stay', result:'pass', detail:'3 inpatient nights confirmed', tag:'PASS'},
+      amd:{check:'Verifying physician order and care level', result:'pass', detail:'Signed order on file', tag:'PASS'},
+      ins:{check:'Verifying AARP Supplement Plan F coverage', result:'pass', detail:'No prior auth required', tag:'PASS'},
+      pcc:{check:'Checking bed availability Wing B', result:'pass', detail:'Rm 214 available', tag:'PASS'}
+    },
+    log:[
+      {t:'09:22:01',i:'◎',m:'Eligibility check initiated for <strong>Margaret Okafor</strong> · MRN-00429'},
+      {t:'09:22:01',i:'→',m:'<span class="rtag">Rule: Wave 1 (CMS + AMD) must clear before Wave 2 queries fire</span>'},
+      {t:'09:22:02',i:'◎',m:'CMS query: retrieving Medicare Part A enrollment and benefit period...'},
+      {t:'09:22:02',i:'◎',m:'AMD query: retrieving physician order and care level (parallel with CMS)...'},
+      {t:'09:22:03',i:'✓',m:'CMS: <span class="ptag">part_a_status = ACTIVE</span> · benefit period open through Dec 2026'},
+      {t:'09:22:03',i:'→',m:'<span class="rtag">Rule: Medicare Part A must be active → PASSED</span>'},
+      {t:'09:22:04',i:'✓',m:'CMS: <span class="ptag">qualifying_stay_days = 3 · stay_type = INPATIENT</span>'},
+      {t:'09:22:04',i:'→',m:'<span class="rtag">Rule: 3 consecutive INPATIENT nights required (observation nights do not count) → PASSED</span>'},
+      {t:'09:22:05',i:'✓',m:'AMD: <span class="ptag">physician_signature = SIGNED</span> · Dr. Patel · care_level = SNF skilled PT/OT'},
+      {t:'09:22:05',i:'→',m:'<span class="rtag">Rule: Signed physician order required before admission → PASSED</span>'},
+      {t:'09:22:05',i:'→',m:'<span class="rtag">Rule: Care level must be skilled (not custodial) — PT/OT qualifies → PASSED</span>'},
+      {t:'09:22:06',i:'◎',m:'<strong>Wave 1 complete — all primary gates cleared.</strong> Firing Wave 2...'},
+      {t:'09:22:06',i:'◎',m:'Insurance query: verifying AARP Supplement Plan F and auth requirements...'},
+      {t:'09:22:06',i:'◎',m:'PCC query: checking bed availability at Sunrise SNF (parallel with Insurance)...'},
+      {t:'09:22:07',i:'✓',m:'Insurance: <span class="ptag">coverage_active = true · prior_auth_required = false</span>'},
+      {t:'09:22:07',i:'→',m:'<span class="rtag">Rule: Active coverage required → PASSED. No prior auth needed for this plan/Dx combination.</span>'},
+      {t:'09:22:08',i:'✓',m:'PCC: <span class="ptag">bed_status = AVAILABLE · Wing B Room 214 · admit_date = Mar 16</span>'},
+      {t:'09:22:08',i:'→',m:'<span class="rtag">Rule: Available bed on requested admit date → PASSED</span>'},
+      {t:'09:22:08',i:'✓',m:'<strong>All 4 criteria met.</strong> Verdict: <span class="ptag">ELIGIBLE — HIGH confidence</span>'},
+      {t:'09:22:08',i:'→',m:'Audit log written · HITL review required before admission proceeds'}
+    ]
+  },
+  action:{
+    name:'Carol Simmons', payer:'UnitedHealthcare PPO', dx:'I50.9 — CHF unspecified', care:'SNF cardiac monitoring',
+    sys:{
+      cms:{check:'Verifying Part A status and qualifying stay', result:'pass', detail:'4 inpatient nights confirmed', tag:'PASS'},
+      amd:{check:'Verifying physician order status', result:'warn', detail:'Order UNSIGNED — blocker', tag:'ACTION'},
+      ins:{check:'Verifying UHC PPO auth for I50.9', result:'warn', detail:'Prior auth PENDING — blocker', tag:'ACTION'},
+      pcc:{check:'Checking bed availability Wing A', result:'pass', detail:'Rm 106 available', tag:'PASS'}
+    },
+    log:[
+      {t:'09:04:11',i:'◎',m:'Eligibility check initiated for <strong>Carol Simmons</strong> · MRN-00421'},
+      {t:'09:04:11',i:'→',m:'<span class="rtag">Rule: Wave 1 (CMS + AMD) must clear before Wave 2 queries fire</span>'},
+      {t:'09:04:12',i:'◎',m:'CMS query: retrieving Medicare Part A status and qualifying stay...'},
+      {t:'09:04:12',i:'◎',m:'AMD query: retrieving physician order for I50.9 cardiac monitoring (parallel)...'},
+      {t:'09:04:13',i:'✓',m:'CMS: <span class="ptag">part_a_status = ACTIVE</span> · 4 inpatient nights confirmed'},
+      {t:'09:04:13',i:'→',m:'<span class="rtag">Rule: Medicare Part A active → PASSED. 4 inpatient nights exceeds 3-night minimum → PASSED</span>'},
+      {t:'09:04:14',i:'✗',m:'AMD: <span class="ftag">physician_signature = PENDING</span> · order_date = null · Dr. Chen has not yet signed'},
+      {t:'09:04:14',i:'→',m:'<span class="rtag">Rule: Signed physician order required before admission → FAILED · Blocker: physician_order_unsigned</span>'},
+      {t:'09:04:14',i:'→',m:'<span class="rtag">Wave 1 partial — Medicare gate passed, clinical gate blocked. Continuing to Wave 2 to surface all blockers.</span>'},
+      {t:'09:04:15',i:'◎',m:'Insurance query: checking UHC PPO prior auth requirement for ICD-10 I50.9...'},
+      {t:'09:04:15',i:'◎',m:'PCC query: checking bed availability (parallel with Insurance)...'},
+      {t:'09:04:16',i:'✗',m:'Insurance: <span class="ftag">prior_auth_required = true · auth_status = PENDING</span> · 24–48hr turnaround · call 1-800-555-0190'},
+      {t:'09:04:16',i:'→',m:'<span class="rtag">Rule: Prior auth must be APPROVED before admission → FAILED · Blocker: prior_auth_pending</span>'},
+      {t:'09:04:17',i:'✓',m:'PCC: <span class="ptag">bed_status = AVAILABLE · Wing A Room 106</span>'},
+      {t:'09:04:17',i:'→',m:'<span class="rtag">Rule: Available bed required → PASSED. Bed held 48 hours pending blocker resolution.</span>'},
+      {t:'09:04:17',i:'⚠',m:'<strong>2 blockers identified.</strong> Verdict: <span class="wtag">ACTION REQUIRED</span> · resolve before admission'},
+      {t:'09:04:17',i:'→',m:'Return alert set · auto-notify when AMD signature + UHC auth both received · Audit log written'}
+    ]
+  },
+  blocked:{
+    name:'Patricia Dunn', payer:'Humana HMO Gold', dx:'I63.9 — Ischemic stroke', care:'SNF neuro rehab',
+    sys:{
+      cms:{check:'Verifying Part A status and qualifying stay', result:'pass', detail:'5 inpatient nights confirmed', tag:'PASS'},
+      amd:{check:'Verifying physician order for neuro rehab', result:'pass', detail:'Signed order on file', tag:'PASS'},
+      ins:{check:'Verifying Humana HMO Gold coverage & network', result:'fail', detail:'Lapsed + Out-of-network', tag:'BLOCKED'},
+      pcc:{check:'Checking bed availability', result:'pass', detail:'Bed available', tag:'PASS'}
+    },
+    log:[
+      {t:'14:11:03',i:'◎',m:'Eligibility check initiated for <strong>Patricia Dunn</strong> · MRN-00415'},
+      {t:'14:11:03',i:'→',m:'<span class="rtag">Rule: Wave 1 (CMS + AMD) must clear before Wave 2 queries fire</span>'},
+      {t:'14:11:04',i:'◎',m:'CMS query: retrieving Medicare Part A status and qualifying stay...'},
+      {t:'14:11:04',i:'◎',m:'AMD query: retrieving physician order for neuro rehab (parallel)...'},
+      {t:'14:11:05',i:'✓',m:'CMS: <span class="ptag">part_a_status = ACTIVE</span> · 5 inpatient nights confirmed'},
+      {t:'14:11:05',i:'→',m:'<span class="rtag">Rule: Medicare Part A active → PASSED. 5 inpatient nights exceeds minimum → PASSED</span>'},
+      {t:'14:11:06',i:'✓',m:'AMD: <span class="ptag">physician_signature = SIGNED</span> · care_level = SNF neuro rehab · clinically appropriate for I63.9'},
+      {t:'14:11:06',i:'→',m:'<span class="rtag">Rule: Signed physician order required → PASSED. I63.9 stroke maps to skilled neuro rehab (not custodial) → PASSED</span>'},
+      {t:'14:11:06',i:'→',m:'<span class="rtag">Wave 1 complete. Firing Wave 2...</span>'},
+      {t:'14:11:07',i:'◎',m:'Insurance query: verifying Humana HMO Gold coverage status and network...'},
+      {t:'14:11:07',i:'◎',m:'PCC query: checking bed availability (parallel with Insurance)...'},
+      {t:'14:11:08',i:'✗',m:'Insurance: <span class="ftag">coverage_active = false · lapsed Jan 1 2026</span>'},
+      {t:'14:11:08',i:'→',m:'<span class="rtag">Rule: Active insurance coverage required → FAILED · Blocker: coverage_lapsed</span>'},
+      {t:'14:11:08',i:'✗',m:'Insurance: <span class="ftag">network_status = OUT_OF_NETWORK · oon_benefit = NONE</span> · HMO Gold has no out-of-network benefit'},
+      {t:'14:11:08',i:'→',m:'<span class="rtag">Rule: Facility must be in-network OR plan must have OON benefit → FAILED · Blocker: out_of_network</span>'},
+      {t:'14:11:09',i:'→',m:'<span class="rtag">resolvable_at_facility = FALSE — these barriers cannot be resolved by this facility</span>'},
+      {t:'14:11:09',i:'✓',m:'PCC: <span class="ptag">bed_status = AVAILABLE</span> (moot — admission cannot proceed)'},
+      {t:'14:11:09',i:'✗',m:'<strong>2 non-resolvable barriers.</strong> Verdict: <span class="ftag">BLOCKED</span> · do not hold bed · refer to alternate facility'},
+      {t:'14:11:09',i:'→',m:'Alternate referral: Valley SNF (in-network Humana HMO Gold) · 555-0144 · Audit log written'}
+    ]
+  }
+};
+
+let s3running = false;
+
+function onScenarioChange(){
+  const val = document.getElementById('scenarioSelect').value;
+  document.getElementById('runBtn').disabled = !val;
+  if(!val){ document.getElementById('patientStrip').style.display='none'; return; }
+  const s = SCENARIOS[val];
+  document.getElementById('patientStrip').style.display='grid';
+  document.getElementById('psName').textContent  = s.name;
+  document.getElementById('psPayer').textContent = s.payer;
+  document.getElementById('psDx').textContent    = s.dx;
+  document.getElementById('psCare').textContent  = s.care;
+  resetS3();
+}
+
+function resetS3(){
+  ['cms','amd','ins','pcc'].forEach(sys=>{
+    setS3Dot(sys,'idle');
+    document.getElementById('chk-'+sys).textContent = (sys==='ins'||sys==='pcc') ? 'Queued for Wave 2...' : 'Waiting...';
+  });
+  document.getElementById('s3progress').style.width='0%';
+  document.getElementById('wave1badge').style.display='none';
+  document.getElementById('wave2badge').style.display='none';
+  document.getElementById('logBody').innerHTML='<div class="s3-idle"><div style="font-size:1.4rem;opacity:.3">◎</div><div>Ready to run</div></div>';
+  document.getElementById('resultRow').classList.remove('vis');
+}
+
+function setS3Dot(sys, state){
+  const dot = document.getElementById('dot-'+sys);
+  const tag = document.getElementById('tag-'+sys);
+  dot.className = 's3-dot ' + state;
+  const val = document.getElementById('scenarioSelect').value;
+  if(!val) return;
+  const sd = SCENARIOS[val].sys[sys];
+  if(state==='idle')     { tag.className='s3-sys-tag idle';     tag.textContent='Idle'; return; }
+  if(state==='checking') { tag.className='s3-sys-tag checking'; tag.textContent='Checking...'; return; }
+  const r = sd.result;
+  tag.textContent = sd.tag;
+  tag.className = 's3-sys-tag ' + (r==='pass'?'pass': r==='warn'?'warn':'fail');
+  document.getElementById('chk-'+sys).textContent = sd.detail;
+}
+
+function addLogEntry(entry, delay){
+  return new Promise(resolve=>{
+    setTimeout(()=>{
+      const idle = document.getElementById('idleMsg');
+      if(idle) idle.remove();
+      const lb = document.getElementById('logBody');
+      const d = document.createElement('div');
+      d.className = 's3-log-entry';
+      d.innerHTML = `<span class="s3-log-time">${entry.t}</span><span class="s3-log-icon">${entry.i}</span><span class="s3-log-text">${entry.m}</span>`;
+      lb.appendChild(d);
+      requestAnimationFrame(()=>requestAnimationFrame(()=>d.classList.add('vis')));
+      lb.scrollTop = lb.scrollHeight;
+      resolve();
+    }, delay);
+  });
+}
+
+function runCheck(){
+  if(s3running) return;
+  const val = document.getElementById('scenarioSelect').value;
+  if(!val) return;
+  s3running = true;
+  document.getElementById('runBtn').disabled = true;
+  document.getElementById('resultRow').classList.remove('vis');
+  resetS3();
+  document.getElementById('logBody').innerHTML='';
+
+  const s = SCENARIOS[val];
+  const log = s.log;
+  const step = 580;
+  let delay = 0;
+
+  // Find Wave 1 complete line index
+  const w1idx = log.findIndex(e=>e.m.includes('Wave 1 complete')||e.m.includes('Wave 1 partial'));
+
+  document.getElementById('wave1badge').style.display='flex';
+  setS3Dot('cms','checking');
+  setS3Dot('amd','checking');
+  document.getElementById('chk-cms').textContent = s.sys.cms.check;
+  document.getElementById('chk-amd').textContent = s.sys.amd.check;
+  document.getElementById('s3progress').style.width='10%';
+
+  for(let i=0; i<log.length; i++){
+    delay += step;
+    addLogEntry(log[i], delay);
+
+    if(i===3){
+      setTimeout(()=>{ document.getElementById('s3progress').style.width='30%'; }, delay);
+    }
+    if(i===w1idx){
+      setTimeout(()=>{
+        setS3Dot('cms', s.sys.cms.result==='pass'?'pass':'warn');
+        setS3Dot('amd', s.sys.amd.result==='pass'?'pass': s.sys.amd.result==='warn'?'warn':'fail');
+        document.getElementById('s3progress').style.width='55%';
+        document.getElementById('wave2badge').style.display='flex';
+        setS3Dot('ins','checking');
+        setS3Dot('pcc','checking');
+        document.getElementById('chk-ins').textContent = s.sys.ins.check;
+        document.getElementById('chk-pcc').textContent = s.sys.pcc.check;
+      }, delay);
+    }
+    if(i===w1idx+4){
+      setTimeout(()=>{
+        setS3Dot('ins', s.sys.ins.result==='pass'?'pass': s.sys.ins.result==='warn'?'warn':'fail');
+        setS3Dot('pcc', s.sys.pcc.result==='pass'?'pass': s.sys.pcc.result==='warn'?'warn':'fail');
+        document.getElementById('s3progress').style.width='85%';
+      }, delay);
+    }
+  }
+
+  setTimeout(()=>{
+    document.getElementById('s3progress').style.width='100%';
+    document.getElementById('resultRow').classList.add('vis');
+    s3running = false;
+    document.getElementById('runBtn').disabled = false;
+  }, delay + step);
 }
 </script>
 </body>
