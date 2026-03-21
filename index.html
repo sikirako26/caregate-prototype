@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareGate — SNF Admissions</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}
+body{background:#f5f5f7;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.screen{display:none;width:100%;max-width:680px;background:#fff;border-radius:12px;box-shadow:0 2px 20px rgba(0,0,0,.1);padding:36px 40px}
+.screen.active{display:block}
+h1{font-size:1.6rem;color:#534AB7;margin-bottom:4px}
+h2{font-size:1.2rem;color:#1a1a2e;margin-bottom:20px}
+.subtitle{color:#666;font-size:.9rem;margin-bottom:24px}
+label{display:block;font-size:.85rem;font-weight:600;color:#333;margin-bottom:4px;margin-top:14px}
+input,select,textarea{width:100%;padding:9px 12px;border:1px solid #d0d0d8;border-radius:6px;font-size:.9rem;outline:none}
+input:focus,select:focus{border-color:#534AB7}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.hipaa{background:#f0f0ff;border-left:3px solid #534AB7;padding:10px 14px;font-size:.8rem;color:#444;border-radius:0 6px 6px 0;margin-top:18px}
+.nav{display:flex;justify-content:space-between;margin-top:28px}
+.btn{padding:10px 24px;border:none;border-radius:6px;font-size:.9rem;font-weight:600;cursor:pointer}
+.btn-primary{background:#534AB7;color:#fff}
+.btn-primary:hover{background:#4239a0}
+.btn-secondary{background:#e8e8f0;color:#534AB7}
+.btn-secondary:hover{background:#d8d8e8}
+/* Screen 3 – Loading */
+.dots{display:flex;gap:32px;justify-content:center;margin:32px 0}
+.dot-item{display:flex;flex-direction:column;align-items:center;gap:10px}
+.dot{width:20px;height:20px;border-radius:50%;background:#d0d0d8;transition:background .4s}
+.dot.active{background:#534AB7;box-shadow:0 0 12px #534AB733}
+.dot.done{background:#0F6E56}
+.dot-label{font-size:.8rem;color:#555;font-weight:600}
+.progress-msg{text-align:center;color:#666;font-size:.9rem;min-height:22px}
+/* Screen 4 – Results */
+.verdict{padding:16px 20px;border-radius:8px;text-align:center;font-size:1.2rem;font-weight:700;letter-spacing:.04em;margin-bottom:20px}
+.verdict.eligible{background:#d4f0e6;color:#0F6E56;border:2px solid #0F6E56}
+.verdict.action{background:#fff4d4;color:#a06000;border:2px solid #e0a000}
+.verdict.blocked{background:#fde8e8;color:#c0392b;border:2px solid #c0392b}
+.sys-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:6px;margin-bottom:8px;background:#f8f8fc}
+.sys-name{font-weight:600;font-size:.9rem;color:#333}
+.tag{padding:3px 10px;border-radius:12px;font-size:.78rem;font-weight:700}
+.tag.ok{background:#d4f0e6;color:#0F6E56}
+.tag.warn{background:#fff4d4;color:#a06000}
+.tag.err{background:#fde8e8;color:#c0392b}
+.action-box{background:#f0f0ff;border-radius:8px;padding:14px 18px;margin-top:16px}
+.action-box h3{font-size:.95rem;color:#534AB7;margin-bottom:8px}
+.action-box li{font-size:.85rem;color:#444;margin-left:16px;margin-bottom:4px}
+/* Screen 5 – HITL */
+.reason-box{background:#f8f8fc;border-radius:8px;padding:14px 18px;font-size:.85rem;color:#444;line-height:1.6;margin-bottom:18px}
+.check-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #eee}
+.check-row input[type=checkbox]{width:16px;height:16px;accent-color:#534AB7}
+.check-row span{font-size:.88rem;color:#333}
+.sig-row{display:flex;gap:12px;margin-top:16px;align-items:flex-end}
+.sig-row input{flex:1}
+/* Screen 6 – Confirmation */
+.ref-badge{background:#534AB7;color:#fff;font-size:1.4rem;font-weight:700;letter-spacing:.06em;padding:14px 24px;border-radius:8px;text-align:center;margin:18px 0}
+.audit{background:#f8f8fc;border-radius:8px;padding:12px 16px;font-size:.82rem;color:#555;line-height:1.8}
+.audit span{font-weight:600;color:#333}
+/* Screen 7 – Dashboard */
+.timer{text-align:right;font-size:.82rem;color:#888;margin-bottom:16px}
+.timer b{color:#534AB7}
+.lanes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.lane{border-radius:8px;padding:14px}
+.lane h3{font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+.lane.ready{background:#d4f0e6}.lane.ready h3{color:#0F6E56}
+.lane.needs{background:#fff4d4}.lane.needs h3{color:#a06000}
+.lane.blocked{background:#fde8e8}.lane.blocked h3{color:#c0392b}
+.pt-card{background:#fff;border-radius:6px;padding:10px 12px;margin-bottom:8px;font-size:.82rem;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.pt-card .pt-name{font-weight:700;color:#1a1a2e;margin-bottom:2px}
+.pt-card .pt-meta{color:#666}
+</style>
+</head>
+<body>
+
+<!-- S1: Login -->
+<div class="screen active" id="s1">
+  <h1>CareGate</h1>
+  <h2>Sunrise Skilled Nursing Facility</h2>
+  <p class="subtitle">SNF Admissions Eligibility Portal</p>
+  <label>Role</label>
+  <select id="role">
+    <option>Care Coordinator</option>
+    <option>Admissions Nurse</option>
+    <option>Physician Liaison</option>
+    <option>Administrator</option>
+  </select>
+  <label>Email</label>
+  <input type="email" value="coordinator@sunrisesnf.org">
+  <label>Password</label>
+  <input type="password" value="••••••••">
+  <div class="hipaa">
+    <strong>HIPAA Notice:</strong> This system accesses protected health information. Access is
+    logged and audited. Unauthorized use is prohibited under 45 CFR §164.
+  </div>
+  <div class="nav"><span></span><button class="btn btn-primary" onclick="go(2)">Sign In →</button></div>
+</div>
+
+<!-- S2: Intake -->
+<div class="screen" id="s2">
+  <h1>Patient Intake</h1>
+  <p class="subtitle">New Admission Request · Sunrise SNF</p>
+  <div class="row">
+    <div><label>First Name</label><input value="Margaret"></div>
+    <div><label>Last Name</label><input value="Thornton"></div>
+  </div>
+  <div class="row">
+    <div><label>Date of Birth</label><input type="date" value="1942-07-14"></div>
+    <div><label>MRN</label><input value="SNF-2026-084729"></div>
+  </div>
+  <div class="row">
+    <div><label>Gender</label>
+      <select><option>Female</option><option>Male</option><option>Non-binary</option></select>
+    </div>
+    <div><label>Care Level</label>
+      <select><option>Skilled Nursing – Rehab</option><option>Long-Term Care</option><option>Memory Care</option></select>
+    </div>
+  </div>
+  <label>Primary Insurer</label>
+  <select><option>Medicare Part A</option><option>Medicaid</option><option>Blue Cross PPO</option><option>Aetna Medicare Advantage</option></select>
+  <div class="row">
+    <div><label>Member ID</label><input value="1EG4-TE5-MK72"></div>
+    <div><label>Group #</label><input value="GRP-00491-B"></div>
+  </div>
+  <div class="row">
+    <div><label>ICD-10 Code</label><input value="S72.001A"></div>
+    <div><label>Referring Physician</label><input value="Dr. James Okafor, MD"></div>
+  </div>
+  <div class="nav">
+    <button class="btn btn-secondary" onclick="go(1)">← Back</button>
+    <button class="btn btn-primary" onclick="go(3)">Run Eligibility Check →</button>
+  </div>
+</div>
+
+<!-- S3: Loading -->
+<div class="screen" id="s3">
+  <h1>Eligibility Check</h1>
+  <p class="subtitle">Querying external systems…</p>
+  <div class="dots">
+    <div class="dot-item"><div class="dot" id="d0"></div><div class="dot-label">CMS</div></div>
+    <div class="dot-item"><div class="dot" id="d1"></div><div class="dot-label">AMD</div></div>
+    <div class="dot-item"><div class="dot" id="d2"></div><div class="dot-label">Insurance</div></div>
+    <div class="dot-item"><div class="dot" id="d3"></div><div class="dot-label">PCC</div></div>
+  </div>
+  <p class="progress-msg" id="pmsg">Connecting to CMS…</p>
+  <div class="nav" id="s3nav" style="display:none">
+    <button class="btn btn-secondary" onclick="go(2)">← Back</button>
+    <button class="btn btn-primary" onclick="go(4)">View Results →</button>
+  </div>
+</div>
+
+<!-- S4: Results -->
+<div class="screen" id="s4">
+  <h1>Eligibility Results</h1>
+  <p class="subtitle">Margaret Thornton · MRN SNF-2026-084729</p>
+  <div class="verdict eligible">✓ ELIGIBLE — Proceed to Admission</div>
+  <div class="sys-row"><span class="sys-name">CMS Medicare Part A</span><span class="tag ok">Verified</span></div>
+  <div class="sys-row"><span class="sys-name">AMD Prior Authorization</span><span class="tag ok">Approved</span></div>
+  <div class="sys-row"><span class="sys-name">Insurance Coverage</span><span class="tag warn">Pending CoB</span></div>
+  <div class="sys-row"><span class="sys-name">PCC Care Plan</span><span class="tag ok">On File</span></div>
+  <div class="action-box">
+    <h3>Recommended Actions</h3>
+    <ul>
+      <li>Confirm coordination of benefits with Blue Cross secondary payer</li>
+      <li>Contact: claims@bcbs.com · 1-800-621-8159 Ext. 4</li>
+      <li>Upload signed 485 care plan before admission date</li>
+    </ul>
+  </div>
+  <div class="nav">
+    <button class="btn btn-secondary" onclick="go(3)">← Back</button>
+    <button class="btn btn-primary" onclick="go(5)">HITL Review →</button>
+  </div>
+</div>
+
+<!-- S5: HITL Review -->
+<div class="screen" id="s5">
+  <h1>Human-in-the-Loop Review</h1>
+  <p class="subtitle">AI Reasoning Summary</p>
+  <div class="reason-box">
+    Patient meets the 3-day qualifying inpatient hospital stay requirement (admitted 2026-03-14,
+    discharged 2026-03-18). Medicare Part A SNF benefit applies. ICD-10 S72.001A (femoral neck
+    fracture) supports skilled rehabilitation level of care. Prior auth AMD-PA-99312 approved for
+    21 days. Secondary CoB with Blue Cross requires manual confirmation — does not block admission.
+  </div>
+  <div class="check-row"><input type="checkbox" checked id="c1"><span>3-day inpatient qualifying stay confirmed</span></div>
+  <div class="check-row"><input type="checkbox" checked id="c2"><span>Medicare Part A coverage active and verified</span></div>
+  <div class="check-row"><input type="checkbox" checked id="c3"><span>Skilled care medical necessity documented</span></div>
+  <div class="check-row"><input type="checkbox" id="c4"><span>Secondary insurance CoB resolved</span></div>
+  <div class="check-row"><input type="checkbox" checked id="c5"><span>Referring physician order on file</span></div>
+  <label style="margin-top:16px">Override / Exception Reason (if applicable)</label>
+  <select>
+    <option value="">— None required —</option>
+    <option>CoB resolution in progress — admit pending</option>
+    <option>Physician verbal order accepted — written to follow</option>
+    <option>Weekend admission — documentation by next business day</option>
+  </select>
+  <div class="sig-row">
+    <div style="flex:1"><label>Coordinator Signature</label><input value="L. Chen, Care Coordinator"></div>
+    <div style="width:140px"><label>Date</label><input type="date" value="2026-03-21"></div>
+  </div>
+  <div class="nav">
+    <button class="btn btn-secondary" onclick="go(4)">← Back</button>
+    <button class="btn btn-primary" onclick="go(6)">Approve & Confirm →</button>
+  </div>
+</div>
+
+<!-- S6: Confirmation -->
+<div class="screen" id="s6">
+  <h1>Admission Confirmed</h1>
+  <p class="subtitle">Sunrise Skilled Nursing Facility</p>
+  <div class="ref-badge">ADM-2026-0042</div>
+  <div class="audit">
+    <div><span>Patient:</span> Margaret E. Thornton</div>
+    <div><span>MRN:</span> SNF-2026-084729</div>
+    <div><span>Admission Date:</span> 2026-03-21</div>
+    <div><span>Care Level:</span> Skilled Nursing – Rehab</div>
+    <div><span>Payer:</span> Medicare Part A</div>
+    <div><span>Approved By:</span> L. Chen, Care Coordinator</div>
+    <div><span>AI Eligibility Run:</span> 2026-03-21 09:14:32 UTC</div>
+    <div><span>HITL Review Completed:</span> 2026-03-21 09:22:07 UTC</div>
+    <div><span>Audit Log ID:</span> CG-LOG-20260321-00914</div>
+  </div>
+  <div class="nav">
+    <button class="btn btn-secondary" onclick="go(5)">← Back</button>
+    <button class="btn btn-primary" onclick="go(7)">Go to Dashboard →</button>
+  </div>
+</div>
+
+<!-- S7: Dashboard -->
+<div class="screen" id="s7">
+  <h1>Referral Dashboard</h1>
+  <div class="timer">Session: <b id="timer">00:00</b></div>
+  <div class="lanes">
+    <div class="lane ready">
+      <h3>Ready to Admit</h3>
+      <div class="pt-card"><div class="pt-name">Margaret Thornton</div><div class="pt-meta">ADM-2026-0042 · Medicare A</div></div>
+      <div class="pt-card"><div class="pt-name">Robert Delacroix</div><div class="pt-meta">ADM-2026-0038 · Medicare A</div></div>
+      <div class="pt-card"><div class="pt-name">Yolanda Ferris</div><div class="pt-meta">ADM-2026-0041 · Medicaid</div></div>
+    </div>
+    <div class="lane needs">
+      <h3>Needs Action</h3>
+      <div class="pt-card"><div class="pt-name">Harold Nguyen</div><div class="pt-meta">ADM-2026-0039 · CoB pending</div></div>
+      <div class="pt-card"><div class="pt-name">Sandra Okonkwo</div><div class="pt-meta">ADM-2026-0040 · Auth expiring</div></div>
+    </div>
+    <div class="lane blocked">
+      <h3>Blocked</h3>
+      <div class="pt-card"><div class="pt-name">Francis Beaumont</div><div class="pt-meta">ADM-2026-0036 · No qualifying stay</div></div>
+      <div class="pt-card"><div class="pt-name">Irene Castillo</div><div class="pt-meta">ADM-2026-0037 · Coverage lapsed</div></div>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="btn btn-secondary" onclick="go(6)">← Back</button>
+    <button class="btn btn-primary" onclick="go(1)">New Admission</button>
+  </div>
+</div>
+
+<script>
+function go(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  if(n===3) runLoader();
+  if(n===7) startTimer();
+}
+
+function runLoader(){
+  const msgs=['Connecting to CMS…','Querying AMD prior auth…','Verifying insurance coverage…','Syncing PCC care plan…','Analysis complete.'];
+  const dots=[0,1,2,3];
+  let i=0;
+  dots.forEach(d=>{ document.getElementById('d'+d).className='dot'; });
+  document.getElementById('pmsg').textContent=msgs[0];
+  document.getElementById('s3nav').style.display='none';
+  function step(){
+    if(i<4){
+      const d=document.getElementById('d'+i);
+      d.classList.add('active');
+      document.getElementById('pmsg').textContent=msgs[i+1];
+      setTimeout(()=>{ d.classList.remove('active'); d.classList.add('done'); i++; step(); },900);
+    } else {
+      document.getElementById('pmsg').textContent=msgs[4];
+      document.getElementById('s3nav').style.display='flex';
+    }
+  }
+  setTimeout(step,400);
+}
+
+let timerInterval;
+function startTimer(){
+  clearInterval(timerInterval);
+  let secs=0;
+  const el=document.getElementById('timer');
+  timerInterval=setInterval(()=>{
+    secs++;
+    const m=String(Math.floor(secs/60)).padStart(2,'0');
+    const s=String(secs%60).padStart(2,'0');
+    el.textContent=m+':'+s;
+  },1000);
+}
+</script>
+</body>
+</html>
