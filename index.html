@@ -6,7 +6,7 @@
 <title>CareGate — SNF Admissions</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}
-body{background:#f0f4f3;min-height:100vh;display:flex;flex-direction:column}
+body{background:#f0f4f3;min-height:100vh;display:flex;flex-direction:column;align-items:stretch}
 
 /* ── Top nav bar ── */
 .topbar{background:#fff;border-bottom:1px solid #e0e0e8;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
@@ -30,7 +30,7 @@ body{background:#f0f4f3;min-height:100vh;display:flex;flex-direction:column}
 .step-item.done .step-label{color:#0F6E56}
 
 /* ── Main content area ── */
-.main{flex:1;padding:28px 24px;display:flex;justify-content:center}
+.main{flex:1;padding:28px 24px 56px;display:flex;justify-content:center;align-items:flex-start}
 .card{width:100%;max-width:820px;background:#fff;border-radius:14px;box-shadow:0 2px 16px rgba(0,0,0,.08);padding:32px 36px}
 
 /* ── Common ── */
@@ -275,7 +275,7 @@ input:focus,select:focus{border-color:#0F6E56}
   <div class="hipaa" style="margin-top:16px">
     <strong>HIPAA Notice:</strong> This system accesses protected health information. All access is logged and audited. Unauthorized use is prohibited under 45 CFR §164.
   </div>
-  <div class="nav"><span></span><button class="btn btn-primary" onclick="go(2)">Sign In →</button></div>
+  <div class="nav"><span></span><button class="btn btn-primary" id="btnSignIn">Sign In →</button></div>
 </div>
 
 <!-- ══ S2: Intake — Search + Upload ══ -->
@@ -288,7 +288,7 @@ input:focus,select:focus{border-color:#0F6E56}
     <h3>&#128269; Search Existing Referrals</h3>
     <div class="search-input-wrap">
       <span class="search-icon">&#128269;</span>
-      <input type="text" id="searchInput" placeholder="Search by patient name or referring facility..." oninput="doSearch(this.value)">
+      <input type="text" id="searchInput" placeholder="Search by patient name or referring facility..." id="searchInput">
     </div>
     <div class="search-hint">Enter a name or facility to search existing referrals</div>
     <div class="search-results" id="searchResults"></div>
@@ -297,13 +297,13 @@ input:focus,select:focus{border-color:#0F6E56}
   <div class="or-divider">OR</div>
 
   <!-- Upload new -->
-  <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+  <div class="upload-box" id="uploadBox">
     <div style="font-size:32px;margin-bottom:8px">&#128196;</div>
     <h3>Start New Admission</h3>
     <p>Upload a hospital referral packet to begin the admissions process</p>
     <div class="pdf-rec">PDF Recommended</div>
     <div class="upload-formats">CSV and Excel (.xlsx) also accepted</div>
-    <input type="file" id="fileInput" style="display:none" accept=".pdf,.csv,.xlsx,.xls" onchange="onFileUpload(this)">
+    <input type="file" id="fileInput" style="display:none" accept=".pdf,.csv,.xlsx,.xls" id="fileInput">
   </div>
 
   <div id="uploadMsg" style="display:none;margin-top:10px;padding:10px 14px;background:#E1F5EE;border-radius:7px;font-size:.82rem;color:#0F6E56;font-weight:600;display:none"></div>
@@ -314,7 +314,7 @@ input:focus,select:focus{border-color:#0F6E56}
       <h3>&#10003; Patient record loaded — read only</h3>
       <div style="display:flex;gap:8px;align-items:center">
         <span class="readonly-badge">Read Only</span>
-        <button class="btn btn-outline" style="padding:5px 14px;font-size:.78rem" onclick="enableEdit()">Edit</button>
+        <button class="btn btn-outline" style="padding:5px 14px;font-size:.78rem" id="btnEdit">Edit</button>
       </div>
     </div>
     <div class="prefill-grid">
@@ -331,8 +331,8 @@ input:focus,select:focus{border-color:#0F6E56}
   </div>
 
   <div class="nav">
-    <button class="btn btn-secondary" onclick="go(1)">← Back</button>
-    <button class="btn btn-primary" id="intakeNextBtn" onclick="go(3)" disabled>Run Eligibility Check →</button>
+    <button class="btn btn-secondary" id="btnIntakeBack">← Back</button>
+    <button class="btn btn-primary" id="intakeNextBtn" disabled>Run Eligibility Check →</button>
   </div>
 </div>
 
@@ -343,13 +343,13 @@ input:focus,select:focus{border-color:#0F6E56}
 
   <div class="s3-selector">
     <span class="s3-sel-label">Demo scenario:</span>
-    <select class="s3-select" id="scenarioSelect" onchange="onScenarioChange()">
+    <select class="s3-select" id="scenarioSelect" id="scenarioSelect">
       <option value="">— Select a scenario to demonstrate —</option>
       <option value="eligible">Fully eligible — Margaret Okafor · Medicare A · Hip fracture</option>
       <option value="action">Action required — Carol Simmons · UHC PPO · CHF (2 blockers)</option>
       <option value="blocked">Hard blocked — Patricia Dunn · Humana HMO · Lapsed + OON</option>
     </select>
-    <button class="s3-run" id="runBtn" onclick="runCheck()" disabled>Run check</button>
+    <button class="s3-run" id="runBtn" id="btnRun" disabled>Run check</button>
   </div>
 
   <div class="patient-strip" id="patientStrip" style="display:none">
@@ -381,11 +381,11 @@ input:focus,select:focus{border-color:#0F6E56}
   </div>
 
   <div class="s3-result-row" id="resultRow">
-    <button class="s3-view-btn" onclick="go(4)">View eligibility results →</button>
+    <button class="s3-view-btn" id="btnViewResults">View eligibility results →</button>
   </div>
 
   <div class="nav" style="margin-top:16px">
-    <button class="btn btn-secondary" onclick="go(2)">← Back</button>
+    <button class="btn btn-secondary" id="btnS3Back">← Back</button>
     <span style="font-size:.75rem;color:#bbb">"View results" button appears after check completes</span>
   </div>
 </div>
@@ -408,8 +408,8 @@ input:focus,select:focus{border-color:#0F6E56}
     </ul>
   </div>
   <div class="nav">
-    <button class="btn btn-secondary" onclick="go(3)">← Back</button>
-    <button class="btn btn-primary" onclick="go(5)">Assign Bed →</button>
+    <button class="btn btn-secondary" id="btnS4Back">← Back</button>
+    <button class="btn btn-primary" id="btnAssignBed">Assign Bed →</button>
   </div>
 </div>
 
@@ -458,21 +458,21 @@ input:focus,select:focus{border-color:#0F6E56}
   <!-- Alternative options -->
   <div class="alt-section">
     <h3>Alternative Options</h3>
-    <div class="alt-room" onclick="selectRoom('B-218')">
+    <div class="alt-room" id="room218">
       <div class="ar-left">
         <div class="ar-icon">&#128716;</div>
         <div><div class="ar-name">Room B-218</div><div class="ar-sub">Semi-private · Rehabilitation Unit</div></div>
       </div>
       <div class="ar-badge soon">&#9201; Mar 18</div>
     </div>
-    <div class="alt-room" onclick="selectRoom('W-105')">
+    <div class="alt-room" id="roomW105">
       <div class="ar-left">
         <div class="ar-icon">&#128716;</div>
         <div><div class="ar-name">Room W-105</div><div class="ar-sub">Private · West Wing</div></div>
       </div>
       <div class="ar-badge avail">&#10003; Available</div>
     </div>
-    <div class="alt-room" onclick="selectRoom('E-301')">
+    <div class="alt-room" id="roomE301">
       <div class="ar-left">
         <div class="ar-icon">&#128716;</div>
         <div><div class="ar-name">Room E-301</div><div class="ar-sub">Semi-private · East Wing</div></div>
@@ -482,8 +482,8 @@ input:focus,select:focus{border-color:#0F6E56}
   </div>
 
   <div class="nav">
-    <button class="btn btn-secondary" onclick="go(4)">← Back</button>
-    <button class="btn btn-primary" onclick="go(6)">Confirm Bed &amp; Continue →</button>
+    <button class="btn btn-secondary" id="btnS5Back">← Back</button>
+    <button class="btn btn-primary" id="btnConfirmBed">Confirm Bed &amp; Continue →</button>
   </div>
 </div>
 
@@ -512,8 +512,8 @@ input:focus,select:focus{border-color:#0F6E56}
     <div style="width:150px"><label>Date &amp; Time</label><input value="2026-03-15 09:22"></div>
   </div>
   <div class="nav">
-    <button class="btn btn-secondary" onclick="go(5)">← Back</button>
-    <button class="btn btn-primary" onclick="go(7)">Approve &amp; Confirm →</button>
+    <button class="btn btn-secondary" id="btnS6Back">← Back</button>
+    <button class="btn btn-primary" id="btnApprove">Approve &amp; Confirm →</button>
   </div>
 </div>
 
@@ -535,11 +535,11 @@ input:focus,select:focus{border-color:#0F6E56}
     <div><span>Audit Log ID:</span> CG-LOG-20260315-00914</div>
   </div>
   <div class="finalize-row">
-    <button class="finalize-btn" onclick="openModal()">&#128394; Finalize &amp; Sign</button>
+    <button class="finalize-btn" id="btnFinalize">&#128394; Finalize &amp; Sign</button>
   </div>
   <div class="nav" style="margin-top:16px">
-    <button class="btn btn-secondary" onclick="go(6)">← Back</button>
-    <button class="btn btn-primary" onclick="go(8)">Go to Dashboard →</button>
+    <button class="btn btn-secondary" id="btnS7Back">← Back</button>
+    <button class="btn btn-primary" id="btnDashboard">Go to Dashboard →</button>
   </div>
 </div>
 
@@ -568,8 +568,8 @@ input:focus,select:focus{border-color:#0F6E56}
     </div>
   </div>
   <div class="nav">
-    <button class="btn btn-secondary" onclick="go(7)">← Back</button>
-    <button class="btn btn-primary" onclick="go(2)">+ New Admission</button>
+    <button class="btn btn-secondary" id="btnS8Back">← Back</button>
+    <button class="btn btn-primary" id="btnNewAdmission">+ New Admission</button>
   </div>
 </div>
 
@@ -581,8 +581,8 @@ input:focus,select:focus{border-color:#0F6E56}
     <h2>Finalize Admission</h2>
     <p>Are you sure you want to finalize the admission for <strong>Margaret Okafor</strong>? This action will lock the admission record and cannot be undone.</p>
     <div class="modal-btns">
-      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="confirmFinalize()" style="background:#0F6E56">Confirm &amp; Sign</button>
+      <button class="btn btn-secondary" id="btnModalCancel">Cancel</button>
+      <button class="btn btn-primary" id="btnModalConfirm" style="background:#0F6E56">Confirm &amp; Sign</button>
     </div>
   </div>
 </div>
@@ -593,9 +593,14 @@ input:focus,select:focus{border-color:#0F6E56}
 ═══════════════════════════════════════ */
 const STEP_MAP = {2:1, 3:2, 4:3, 5:4, 6:5, 7:6, 8:7}; // screen → stepper index (1-based)
 
-function go(n){
+window.go = function(n){
   document.querySelectorAll('.card').forEach(c=>c.style.display='none');
-  document.getElementById('s'+n).style.display='block';
+  const target = document.getElementById('s'+n);
+  target.style.display = 'block';
+  if(n===1) target.style.maxWidth = '460px';
+  if(n===8) target.style.maxWidth = '900px';
+  if(n!==1 && n!==8) target.style.maxWidth = '820px';
+  target.style.width = '100%';
   window.scrollTo(0,0);
 
   // Show/hide topbar + stepper
@@ -639,7 +644,7 @@ const EXISTING_PATIENTS = [
    notes:"Auth received for respiratory therapy. Physician order SIGNED. Ready to proceed."},
 ];
 
-function doSearch(val){
+window.doSearch = function(val){
   const res = document.getElementById('searchResults');
   if(!val || val.length < 2){ res.innerHTML=''; return; }
   const matches = EXISTING_PATIENTS.filter(p =>
@@ -647,8 +652,8 @@ function doSearch(val){
     p.mrn.toLowerCase().includes(val.toLowerCase())
   );
   if(!matches.length){ res.innerHTML='<div style="font-size:.8rem;color:#aaa;text-align:center;padding:8px">No results found</div>'; return; }
-  res.innerHTML = matches.map(p => `
-    <div class="patient-result" onclick='selectPatient(${JSON.stringify(p)})'>
+  res.innerHTML = matches.map((p,i) => `
+    <div class="patient-result" data-idx="${i}">
       <div class="pr-left">
         <div class="pr-name">${p.name}</div>
         <div class="pr-meta">${p.mrn} · ${p.payer} · Last admit: ${p.last} · ${p.dx}</div>
@@ -656,9 +661,12 @@ function doSearch(val){
       <span class="pr-badge ${p.status}">${p.status==='eligible'?'Eligible':p.status==='action'?'Needs Action':'Blocked'}</span>
     </div>
   `).join('');
+  res.querySelectorAll('.patient-result').forEach(el=>{
+    el.addEventListener('click', function(){ window.selectPatient(matches[+this.dataset.idx]); });
+  });
 }
 
-function selectPatient(p){
+window.selectPatient = function(p){
   document.getElementById('searchResults').innerHTML='';
   document.getElementById('searchInput').value = p.name;
   document.getElementById('pf-name').textContent    = p.name;
@@ -674,11 +682,11 @@ function selectPatient(p){
   document.getElementById('intakeNextBtn').disabled = false;
 }
 
-function enableEdit(){
+window.enableEdit = function(){
   alert('Edit mode: In the full product, fields would become editable here. For the demo this is read-only.');
 }
 
-function onFileUpload(input){
+window.onFileUpload = function(input){
   const file = input.files[0];
   if(!file) return;
   const msg = document.getElementById('uploadMsg');
@@ -691,7 +699,7 @@ function onFileUpload(input){
   selectPatient(EXISTING_PATIENTS[0]);
 }
 
-function selectRoom(room){
+window.selectRoom = function(room){
   alert('Room ' + room + ' selected. In the full product, the bed assignment would update to reflect your choice.');
 }
 
@@ -789,7 +797,7 @@ const SCENARIOS = {
 
 let s3running = false;
 
-function onScenarioChange(){
+window.onScenarioChange = function(){
   const val = document.getElementById('scenarioSelect').value;
   document.getElementById('runBtn').disabled = !val;
   if(!val){ document.getElementById('patientStrip').style.display='none'; return; }
@@ -846,7 +854,7 @@ function addEntry(entry,delay){
   });
 }
 
-function runCheck(){
+window.runCheck = function(){
   if(s3running)return;
   const val=document.getElementById('scenarioSelect').value;
   if(!val)return;
@@ -899,9 +907,9 @@ function runCheck(){
 /* ═══════════════════════════════════════
    MODAL
 ═══════════════════════════════════════ */
-function openModal(){ document.getElementById('modalOverlay').classList.add('open'); }
-function closeModal(){ document.getElementById('modalOverlay').classList.remove('open'); }
-function confirmFinalize(){
+window.openModal = function(){ document.getElementById('modalOverlay').classList.add('open'); }
+window.closeModal = function(){ document.getElementById('modalOverlay').classList.remove('open'); }
+window.confirmFinalize = function(){
   closeModal();
   document.querySelector('.finalize-btn').textContent='✓ Record Finalized & Signed';
   document.querySelector('.finalize-btn').style.background='#085041';
@@ -913,9 +921,47 @@ function confirmFinalize(){
 }
 
 /* ═══════════════════════════════════════
+   EVENT WIRING — replaces all onclick
+═══════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', function(){
+  function wire(id, fn){ const el=document.getElementById(id); if(el) el.addEventListener('click', fn); }
+  function wireChange(id, fn){ const el=document.getElementById(id); if(el) el.addEventListener('change', fn); }
+  function wireInput(id, fn){ const el=document.getElementById(id); if(el) el.addEventListener('input', fn); }
+
+  wire('btnSignIn',      ()=>window.go(2));
+  wire('uploadBox',      ()=>document.getElementById('fileInput').click());
+  wire('btnEdit',        ()=>window.enableEdit());
+  wire('btnIntakeBack',  ()=>window.go(1));
+  wire('intakeNextBtn',  ()=>window.go(3));
+  wire('btnRun',         ()=>window.runCheck());
+  wire('btnViewResults', ()=>window.go(4));
+  wire('btnS3Back',      ()=>window.go(2));
+  wire('btnS4Back',      ()=>window.go(3));
+  wire('btnAssignBed',   ()=>window.go(6));
+  wire('room218',        ()=>window.selectRoom('B-218'));
+  wire('roomW105',       ()=>window.selectRoom('W-105'));
+  wire('roomE301',       ()=>window.selectRoom('E-301'));
+  wire('btnS5Back',      ()=>window.go(4));
+  wire('btnConfirmBed',  ()=>window.go(6));
+  wire('btnS6Back',      ()=>window.go(5));
+  wire('btnApprove',     ()=>window.go(7));
+  wire('btnFinalize',    ()=>window.openModal());
+  wire('btnS7Back',      ()=>window.go(6));
+  wire('btnDashboard',   ()=>window.go(8));
+  wire('btnS8Back',      ()=>window.go(7));
+  wire('btnNewAdmission',()=>window.go(2));
+  wire('btnModalCancel', ()=>window.closeModal());
+  wire('btnModalConfirm',()=>window.confirmFinalize());
+
+  wireInput('searchInput',    (e)=>window.doSearch(e.target.value));
+  wireChange('fileInput',     (e)=>window.onFileUpload(e.target));
+  wireChange('scenarioSelect',()=>window.onScenarioChange());
+});
+
+/* ═══════════════════════════════════════
    DASHBOARD TIMER
 ═══════════════════════════════════════ */
 let timerInterval;
-function startTimer(){
+window.startTimer = function(){
   clearInterval(timerInterval);
   let s
