@@ -302,7 +302,7 @@ input:focus,select:focus{border-color:#0F6E56}
     <h3>&#128269; Search Existing Referrals</h3>
     <div class="search-input-wrap">
       <span class="search-icon">&#128269;</span>
-      <input type="text" id="searchInput" placeholder="Search by patient name or referring facility..." id="searchInput">
+      <input type="text" id="searchInput" placeholder="Search by patient name or referring facility...">
     </div>
     <div class="search-hint">Enter a name or facility to search existing referrals</div>
     <div class="search-results" id="searchResults"></div>
@@ -317,7 +317,7 @@ input:focus,select:focus{border-color:#0F6E56}
     <p>Upload a hospital referral packet to begin the admissions process</p>
     <div class="pdf-rec">PDF Recommended</div>
     <div class="upload-formats">CSV and Excel (.xlsx) also accepted</div>
-    <input type="file" id="fileInput" style="display:none" accept=".pdf,.csv,.xlsx,.xls" id="fileInput">
+    <input type="file" id="fileInput" style="display:none" accept=".pdf,.csv,.xlsx,.xls">
   </div>
 
   <div id="uploadMsg" style="display:none;margin-top:10px;padding:10px 14px;background:#E1F5EE;border-radius:7px;font-size:.82rem;color:#0F6E56;font-weight:600;display:none"></div>
@@ -357,13 +357,13 @@ input:focus,select:focus{border-color:#0F6E56}
 
   <div class="s3-selector">
     <span class="s3-sel-label">Demo scenario:</span>
-    <select class="s3-select" id="scenarioSelect" id="scenarioSelect">
+    <select class="s3-select" id="scenarioSelect">
       <option value="">— Select a scenario to demonstrate —</option>
       <option value="eligible">Fully eligible — Margaret Okafor · Medicare A · Hip fracture</option>
       <option value="action">Action required — Carol Simmons · UHC PPO · CHF (2 blockers)</option>
       <option value="blocked">Hard blocked — Patricia Dunn · Humana HMO · Lapsed + OON</option>
     </select>
-    <button class="s3-run" id="runBtn" id="btnRun" disabled>Run check</button>
+    <button class="s3-run" id="runBtn" disabled>Run check</button>
   </div>
 
   <div class="patient-strip" id="patientStrip" style="display:none">
@@ -947,7 +947,8 @@ document.addEventListener('DOMContentLoaded', function(){
   wire('btnEdit',        ()=>window.enableEdit());
   wire('btnIntakeBack',  ()=>window.go(1));
   wire('intakeNextBtn',  ()=>window.go(3));
-  wire('btnRun',         ()=>window.runCheck());
+  // runBtn wired inline near element
+  wire('runBtn',         ()=>window.runCheck());
   wire('btnViewResults', ()=>window.go(4));
   wire('btnS3Back',      ()=>window.go(2));
   wire('btnS4Back',      ()=>window.go(3));
@@ -978,4 +979,13 @@ document.addEventListener('DOMContentLoaded', function(){
 let timerInterval;
 window.startTimer = function(){
   clearInterval(timerInterval);
-  let s
+  let secs=0;
+  const el=document.getElementById('timer');
+  timerInterval=setInterval(function(){
+    secs++;
+    el.textContent=String(Math.floor(secs/60)).padStart(2,'0')+':'+String(secs%60).padStart(2,'0');
+  },1000);
+};
+</script>
+</body>
+</html>
