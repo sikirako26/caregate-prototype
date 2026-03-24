@@ -269,14 +269,28 @@ input:focus,select:focus{border-color:#0F6E56}
   <label>Role</label>
   <select><option>Care Coordinator</option><option>Admissions Nurse</option><option>Physician Liaison</option><option>Administrator</option></select>
   <label>Email address</label>
-  <input type="email" value="coordinator@sunrisesnf.org">
+  <input type="text" autocomplete="off" value="coordinator@sunrisesnf.org">
   <label>Password</label>
-  <input type="password" value="••••••••">
+  <input type="text" autocomplete="off" style="-webkit-text-security:disc" value="••••••••">
   <div class="hipaa" style="margin-top:16px">
     <strong>HIPAA Notice:</strong> This system accesses protected health information. All access is logged and audited. Unauthorized use is prohibited under 45 CFR §164.
   </div>
-  <div class="nav"><span></span><button class="btn btn-primary" id="btnSignIn">Sign In →</button></div>
+  <div class="nav"><span></span><button type="button" class="btn btn-primary" id="btnSignIn">Sign In →</button></div>
 </div>
+<script>
+  document.getElementById('btnSignIn').addEventListener('click', function(){ 
+    document.querySelectorAll('.card').forEach(function(c){ c.style.display='none'; });
+    var s2 = document.getElementById('s2');
+    s2.style.display = 'block';
+    s2.style.maxWidth = '820px';
+    s2.style.width = '100%';
+    document.getElementById('topbar').style.display = 'flex';
+    document.getElementById('stepper').style.display = 'flex';
+    var steps = document.querySelectorAll('.step-item');
+    steps.forEach(function(s,i){ s.className = i===0 ? 'step-item active' : 'step-item'; });
+    window.scrollTo(0,0);
+  });
+</script>
 
 <!-- ══ S2: Intake — Search + Upload ══ -->
 <div class="card" id="s2" style="display:none">
@@ -937,7 +951,7 @@ document.addEventListener('DOMContentLoaded', function(){
   wire('btnViewResults', ()=>window.go(4));
   wire('btnS3Back',      ()=>window.go(2));
   wire('btnS4Back',      ()=>window.go(3));
-  wire('btnAssignBed',   ()=>window.go(6));
+  wire('btnAssignBed',   ()=>window.go(5));
   wire('room218',        ()=>window.selectRoom('B-218'));
   wire('roomW105',       ()=>window.selectRoom('W-105'));
   wire('roomE301',       ()=>window.selectRoom('E-301'));
