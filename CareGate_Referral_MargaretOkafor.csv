@@ -1,0 +1,62 @@
+Field,Value
+--- PATIENT DEMOGRAPHICS ---,
+Full Name,Margaret Anne Okafor
+Date of Birth,1941-03-14
+Age,85
+Gender,Female
+MRN,MRN-00429
+SSN Last 4,7291
+Address,"412 Maple Grove Drive, Springfield, IL 62701"
+Phone,(217) 555-0182
+Emergency Contact,James Okafor (Son) | (217) 555-0194
+--- INSURANCE ---,
+Primary Payer,Medicare Part A
+Medicare Member ID,1EG4-TE5-MK72
+Benefit Period,Open through December 2026
+Secondary Payer,AARP Supplement Plan F
+Secondary Member ID,AARP-8821-OKF
+Prior Auth Required,No
+Patient Copay,$0 (covered by supplement)
+--- HOSPITAL STAY ---,
+Referring Facility,"St. Luke's Medical Center, Springfield, IL"
+Admission Date,2026-03-12
+Discharge Date,2026-03-15
+Total Nights,3
+Stay Classification,INPATIENT (all 3 nights - NOT observation)
+Qualifies for SNF Benefit,Yes
+--- DIAGNOSIS ---,
+Primary ICD-10,S72.001A
+Primary Diagnosis,"Fracture of unspecified part of neck of right femur, initial encounter"
+Secondary ICD-10 1,I10
+Secondary Diagnosis 1,Essential hypertension
+Secondary ICD-10 2,E11.9
+Secondary Diagnosis 2,Type 2 diabetes mellitus without complications
+Care Level Required,Skilled Nursing Facility - Rehabilitation (PT/OT)
+Expected LOS (days),21
+--- PHYSICIAN ORDER ---,
+Ordering Physician,"Dr. Rajesh Patel, MD"
+Physician NPI,1234567890
+Physician Phone,(217) 555-0901
+Order Date,2026-03-14
+Order Status,SIGNED
+--- THERAPIES ---,
+Therapy 1,Physical Therapy (PT)
+PT Frequency,5x/week
+PT Goals,"Gait training, transfers, stair negotiation, hip precautions"
+Therapy 2,Occupational Therapy (OT)
+OT Frequency,5x/week
+OT Goals,"ADL retraining, adaptive equipment, home safety assessment"
+Therapy 3,Skilled Nursing
+Nursing Frequency,Daily
+Nursing Goals,"Wound assessment, medication management, diabetes monitoring"
+--- REVIEW NOTES ---,
+Coordinator Notes,"Patient and family in agreement with SNF placement. Alert, oriented x3, motivated. Goal: return home independently."
+Insurance Note,Medicare Part A verified active. No prior auth required. No patient out-of-pocket cost.
+Advance Directive,DNR/DNI on file
+--- REFERRAL META ---,
+Referral ID,SLM-REF-2026-0847
+Referral Date,2026-03-15
+Requested Admit Date,2026-03-16
+Discharge Coordinator,"Linda Park, MSW"
+Coordinator Email,lpark@stlukes.org
+Coordinator Phone,ext. 4412
