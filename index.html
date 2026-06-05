@@ -163,6 +163,13 @@ input:focus,select:focus{border-color:#0F6E56}
 .action-box{background:#f0fff8;border-radius:8px;padding:14px 18px;margin-top:16px}
 .action-box h3{font-size:.92rem;color:#0F6E56;margin-bottom:8px}
 .action-box li{font-size:.82rem;color:#444;margin-left:16px;margin-bottom:4px}
+.s4-checklist{list-style:none;margin:0;padding:0}
+.s4-check-item{padding:8px 10px;border-radius:6px;margin-bottom:6px;background:#fff;border:1px solid #d0e8d8;transition:background .2s}
+.s4-check-item:has(input:checked){background:#e8f8f0;border-color:#0F6E56;text-decoration-color:#0F6E56}
+.s4-check-item label{display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:.85rem;color:#333}
+.s4-check-item input[type=checkbox]{margin-top:2px;width:16px;height:16px;accent-color:#0F6E56;flex-shrink:0}
+.s4-check-item:has(input:checked) span{text-decoration:line-through;color:#888}
+.s4-gate-hint{font-size:.78rem;color:#a06000;margin-top:10px;font-style:italic}
 
 /* ════════════ SCREEN 5 — BED ════════════ */
 .bed-hero{background:#f0fff8;border-radius:12px;padding:22px;text-align:center;margin-bottom:20px;border:1px solid #c0ddd6}
@@ -868,26 +875,37 @@ const S4_VERDICT = {
 const S4_SYS_LABEL = { cms:'CMS — Medicare Part A', amd:'AMD — Physician order', ins:'Insurance', pcc:'PCC — Bed availability' };
 const S4_TAG_CLASS = { PASS:'ok', ACTION:'warn', BLOCKED:'err' };
 const S4_ACTIONS = {
-  eligible:{ title:'Next actions', items:[
+  eligible:{ title:'Next steps', items:[
     'Proceed to bed assignment — Wing B Room 214 confirmed available',
     "Notify transport coordinator at St. Luke's of confirmed admit date",
     'AARP Supplement Plan F covers Medicare coinsurance — no patient out-of-pocket'
   ]},
-  action:{ title:'Required actions before admission', items:[
+  action:{ title:'Complete all items to unlock bed assignment', items:[
     "Contact Dr. Chen's office to get physician order signed — (555) 234-5678",
     'Submit UHC PPO prior auth for ICD-10 I50.9 — call 1-800-555-0190',
-    'Bed Wing A Room 106 held 48 hours — confirm before hold expires'
+    'Confirm bed Wing A Room 106 hold has not expired'
   ]},
-  blocked:{ title:'Blockers — do not admit', items:[
+  blocked:{ title:'Blockers — admission cannot proceed', items:[
     'Humana HMO Gold coverage lapsed Jan 1, 2026 — patient must reinstate or find alternative',
     'Sunrise SNF is out-of-network with no OON benefit — consider transfer to Valley SNF',
     'Contact social work to explore Medicaid eligibility: ext. 214'
   ]}
 };
+
+function s4ChecklistChanged(){
+  const boxes = document.querySelectorAll('#s4-checklist input[type=checkbox]');
+  const allDone = boxes.length > 0 && [...boxes].every(b => b.checked);
+  const btn = document.getElementById('btnAssignBed');
+  btn.disabled = !allDone;
+  btn.textContent = allDone ? 'Assign Bed →' : `Assign Bed (${[...boxes].filter(b=>b.checked).length}/${boxes.length} resolved)`;
+}
+
 function renderS4(){
   const val = document.getElementById('scenarioSelect').value;
   if(!val) return;
   const s = SCENARIOS[val];
+  const btn = document.getElementById('btnAssignBed');
+
   document.getElementById('s4-subtitle').textContent = s.name + ' · ' + S4_MRN[val];
   const v = S4_VERDICT[val];
   document.getElementById('s4-verdict').innerHTML = `<div class="verdict ${v.cls}">${v.text}</div>`;
@@ -895,8 +913,41 @@ function renderS4(){
     const sys = s.sys[k];
     return `<div class="sys-row"><span class="sys-name">${lbl}</span><span class="tag ${S4_TAG_CLASS[sys.tag]||'ok'}">${sys.detail}</span></div>`;
   }).join('');
+
   const a = S4_ACTIONS[val];
-  document.getElementById('s4-actions').innerHTML = `<h3>${a.title}</h3><ul>${a.items.map(i=>`<li>${i}</li>`).join('')}</ul>`;
+
+  if(val === 'action'){
+    // Checkboxes — button locked until all ticked
+    const checkItems = a.items.map((item, i) => `
+      <li class="s4-check-item">
+        <label>
+          <input type="checkbox" id="s4c${i}" onchange="s4ChecklistChanged()">
+          <span>${item}</span>
+        </label>
+      </li>`).join('');
+    document.getElementById('s4-actions').innerHTML =
+      `<h3>${a.title}</h3><ul id="s4-checklist" class="s4-checklist">${checkItems}</ul>
+       <p class="s4-gate-hint">Check each item once confirmed — Assign Bed unlocks when all are resolved.</p>`;
+    btn.disabled = true;
+    btn.textContent = 'Assign Bed (0/3 resolved)';
+    btn.className = 'btn btn-primary';
+
+  } else if(val === 'blocked'){
+    // No path to admission — replace button with blocked state
+    document.getElementById('s4-actions').innerHTML =
+      `<h3>${a.title}</h3><ul>${a.items.map(i=>`<li>${i}</li>`).join('')}</ul>`;
+    btn.disabled = true;
+    btn.textContent = '✗ Cannot Assign Bed';
+    btn.className = 'btn btn-danger';
+
+  } else {
+    // Eligible — fully active
+    document.getElementById('s4-actions').innerHTML =
+      `<h3>${a.title}</h3><ul>${a.items.map(i=>`<li>${i}</li>`).join('')}</ul>`;
+    btn.disabled = false;
+    btn.textContent = 'Assign Bed →';
+    btn.className = 'btn btn-primary';
+  }
 }
 
 window.runCheck = function(){
