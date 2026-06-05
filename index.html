@@ -407,20 +407,10 @@ input:focus,select:focus{border-color:#0F6E56}
 <!-- ══ S4: Results ══ -->
 <div class="card" id="s4" style="display:none">
   <h1>Eligibility Results</h1>
-  <div class="subtitle">Margaret Okafor · MRN-00429</div>
-  <div class="verdict eligible">✓ ELIGIBLE — Proceed to Admission</div>
-  <div class="sys-row"><span class="sys-name">CMS — Medicare Part A</span><span class="tag ok">Verified · 3 inpatient nights</span></div>
-  <div class="sys-row"><span class="sys-name">AMD — Physician order</span><span class="tag ok">Signed · Dr. Patel · Mar 14</span></div>
-  <div class="sys-row"><span class="sys-name">Insurance — AARP Plan F</span><span class="tag ok">Active · No prior auth required</span></div>
-  <div class="sys-row"><span class="sys-name">PCC — Bed availability</span><span class="tag ok">Wing B Room 214 · Mar 16</span></div>
-  <div class="action-box">
-    <h3>Next actions</h3>
-    <ul>
-      <li>Proceed to bed assignment — Wing B Room 214 confirmed available</li>
-      <li>Notify transport coordinator at St. Luke's of confirmed admit date</li>
-      <li>AARP Supplement Plan F covers Medicare coinsurance — no patient out-of-pocket</li>
-    </ul>
-  </div>
+  <div class="subtitle" id="s4-subtitle"></div>
+  <div id="s4-verdict"></div>
+  <div id="s4-sysrows"></div>
+  <div class="action-box" id="s4-actions"></div>
   <div class="nav">
     <button class="btn btn-secondary" id="btnS4Back">← Back</button>
     <button class="btn btn-primary" id="btnAssignBed">Assign Bed →</button>
@@ -633,6 +623,7 @@ window.go = function(n){
   }
 
   if(n===3) resetS3UI();
+  if(n===4) renderS4();
   if(n===8) startTimer();
 }
 
@@ -866,6 +857,46 @@ function addEntry(entry,delay){
       resolve();
     },delay);
   });
+}
+
+const S4_MRN     = { eligible:'MRN-00429', action:'MRN-00421', blocked:'MRN-00415' };
+const S4_VERDICT = {
+  eligible:{ cls:'eligible', text:'✓ ELIGIBLE — Proceed to Admission' },
+  action:  { cls:'action',   text:'⚠ ACTION REQUIRED — Resolve 2 Items Before Admitting' },
+  blocked: { cls:'blocked',  text:'✗ BLOCKED — Admission Cannot Proceed' }
+};
+const S4_SYS_LABEL = { cms:'CMS — Medicare Part A', amd:'AMD — Physician order', ins:'Insurance', pcc:'PCC — Bed availability' };
+const S4_TAG_CLASS = { PASS:'ok', ACTION:'warn', BLOCKED:'err' };
+const S4_ACTIONS = {
+  eligible:{ title:'Next actions', items:[
+    'Proceed to bed assignment — Wing B Room 214 confirmed available',
+    "Notify transport coordinator at St. Luke's of confirmed admit date",
+    'AARP Supplement Plan F covers Medicare coinsurance — no patient out-of-pocket'
+  ]},
+  action:{ title:'Required actions before admission', items:[
+    "Contact Dr. Chen's office to get physician order signed — (555) 234-5678",
+    'Submit UHC PPO prior auth for ICD-10 I50.9 — call 1-800-555-0190',
+    'Bed Wing A Room 106 held 48 hours — confirm before hold expires'
+  ]},
+  blocked:{ title:'Blockers — do not admit', items:[
+    'Humana HMO Gold coverage lapsed Jan 1, 2026 — patient must reinstate or find alternative',
+    'Sunrise SNF is out-of-network with no OON benefit — consider transfer to Valley SNF',
+    'Contact social work to explore Medicaid eligibility: ext. 214'
+  ]}
+};
+function renderS4(){
+  const val = document.getElementById('scenarioSelect').value;
+  if(!val) return;
+  const s = SCENARIOS[val];
+  document.getElementById('s4-subtitle').textContent = s.name + ' · ' + S4_MRN[val];
+  const v = S4_VERDICT[val];
+  document.getElementById('s4-verdict').innerHTML = `<div class="verdict ${v.cls}">${v.text}</div>`;
+  document.getElementById('s4-sysrows').innerHTML = Object.entries(S4_SYS_LABEL).map(([k,lbl])=>{
+    const sys = s.sys[k];
+    return `<div class="sys-row"><span class="sys-name">${lbl}</span><span class="tag ${S4_TAG_CLASS[sys.tag]||'ok'}">${sys.detail}</span></div>`;
+  }).join('');
+  const a = S4_ACTIONS[val];
+  document.getElementById('s4-actions').innerHTML = `<h3>${a.title}</h3><ul>${a.items.map(i=>`<li>${i}</li>`).join('')}</ul>`;
 }
 
 window.runCheck = function(){
