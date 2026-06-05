@@ -545,7 +545,7 @@ input:focus,select:focus{border-color:#0F6E56}
     <div><span>Payer:</span> Medicare Part A · AARP Supplement Plan F</div>
     <div><span>Approved By:</span> J. Martinez, Care Coordinator</div>
     <div><span>AI Eligibility Run:</span> 2026-03-15 09:14:32 UTC</div>
-    <div><span>HITL Review Completed:</span> 2026-03-15 09:22:07 UTC</div>
+    <div><span>HITL Review Completed:</span> <input id="sigDateTime" readonly> UTC</div>
     <div><span>Audit Log ID:</span> CG-LOG-20260315-00914</div>
   </div>
   <div class="finalize-row">
@@ -634,6 +634,7 @@ window.go = function(n){
 
   if(n===3) resetS3UI();
   if(n===4) renderS4();
+  if(n===6) stampDateTime();
   if(n===6) stampDateTime();
   if(n===8) startTimer();
 }
@@ -1069,7 +1070,11 @@ window.stampDateTime = function(){
   const val = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
   document.getElementById('sigDateTime').value = val;
 };
-
+window.stampDateTime = function(){
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  document.getElementById('sigDateTime').value = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+};
 window.toggleOverrideText = function(val){
   const box = document.getElementById('overrideText');
   box.style.display = val === '__other__' ? 'block' : 'none';
