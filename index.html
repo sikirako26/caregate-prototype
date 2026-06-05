@@ -449,7 +449,7 @@ input:focus,select:focus{border-color:#0F6E56}
     </div>
     <div class="bed-meta-card">
       <div class="bmc-icon">&#128197;</div>
-      <div><div class="bmc-label">Ready Date</div><div class="bmc-val">Sun, Mar 16, 2026</div></div>
+      <div><div class="bmc-label">Ready Date</div><div class="bmc-val" id="bedReadyDate"></div></div>
     </div>
   </div>
 
@@ -539,13 +539,13 @@ input:focus,select:focus{border-color:#0F6E56}
   <div class="audit">
     <div><span>Patient:</span> Margaret Anne Okafor</div>
     <div><span>MRN:</span> MRN-00429</div>
-    <div><span>Admission Date:</span> March 16, 2026</div>
+    <div><span>Admission Date:</span> <span id="confirmAdmitDate"></span></div>
     <div><span>Bed Assigned:</span> Room B-214, Wing B — Rehabilitation Unit</div>
     <div><span>Care Level:</span> Skilled Nursing — Rehabilitation (PT/OT)</div>
     <div><span>Payer:</span> Medicare Part A · AARP Supplement Plan F</div>
     <div><span>Approved By:</span> J. Martinez, Care Coordinator</div>
-    <div><span>AI Eligibility Run:</span> 2026-03-15 09:14:32 UTC</div>
-    <div><span>HITL Review Completed:</span> <input id="sigDateTime" readonly> UTC</div>
+    <div><span>AI Eligibility Run:</span> <span id="confirmEligRun"></span></div>
+    <div><span>HITL Review Completed:</span> <span id="confirmHITL"></span></div>
     <div><span>Audit Log ID:</span> CG-LOG-20260315-00914</div>
   </div>
   <div class="finalize-row">
@@ -634,8 +634,9 @@ window.go = function(n){
 
   if(n===3) resetS3UI();
   if(n===4) renderS4();
+  if(n===5) stampBedDate();
   if(n===6) stampDateTime();
-  if(n===6) stampDateTime();
+  if(n===7) stampConfirmDates();
   if(n===8) startTimer();
 }
 
@@ -1064,16 +1065,29 @@ document.addEventListener('DOMContentLoaded', function(){
    DASHBOARD TIMER
 ═══════════════════════════════════════ */
 let timerInterval;
+const _pad = n => String(n).padStart(2,'0');
+const _fmtLong = d => d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+const _fmtMed  = d => d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+const _fmtUTC  = d => `${d.getUTCFullYear()}-${_pad(d.getUTCMonth()+1)}-${_pad(d.getUTCDate())} ${_pad(d.getUTCHours())}:${_pad(d.getUTCMinutes())}:${_pad(d.getUTCSeconds())} UTC`;
+
 window.stampDateTime = function(){
   const now = new Date();
-  const pad = n => String(n).padStart(2,'0');
-  const val = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
-  document.getElementById('sigDateTime').value = val;
+  document.getElementById('sigDateTime').value =
+    `${now.getFullYear()}-${_pad(now.getMonth()+1)}-${_pad(now.getDate())} ${_pad(now.getHours())}:${_pad(now.getMinutes())}`;
 };
-window.stampDateTime = function(){
+window.stampBedDate = function(){
+  const d = new Date(); d.setDate(d.getDate()+1);
+  const el = document.getElementById('bedReadyDate');
+  if(el) el.textContent = _fmtLong(d);
+};
+window.stampConfirmDates = function(){
   const now = new Date();
-  const pad = n => String(n).padStart(2,'0');
-  document.getElementById('sigDateTime').value = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  const el1 = document.getElementById('confirmAdmitDate');
+  const el2 = document.getElementById('confirmEligRun');
+  const el3 = document.getElementById('confirmHITL');
+  if(el1) el1.textContent = _fmtMed(now);
+  if(el2) el2.textContent = _fmtUTC(new Date(now - 8*60000));
+  if(el3) el3.textContent = _fmtUTC(now);
 };
 window.toggleOverrideText = function(val){
   const box = document.getElementById('overrideText');
