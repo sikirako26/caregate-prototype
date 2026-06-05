@@ -523,7 +523,7 @@ input:focus,select:focus{border-color:#0F6E56}
     style="display:none;margin-top:8px;resize:vertical;border-color:#534AB7"></textarea>
   <div class="sig-row">
     <div style="flex:1"><label>Coordinator Signature</label><input value="J. Martinez, Care Coordinator"></div>
-    <div style="width:150px"><label>Date &amp; Time</label><input value="2026-03-15 09:22"></div>
+    <div style="width:150px"><label>Date &amp; Time</label><input id="sigDateTime" readonly></div>
   </div>
   <div class="nav">
     <button class="btn btn-secondary" id="btnS6Back">← Back</button>
@@ -634,6 +634,7 @@ window.go = function(n){
 
   if(n===3) resetS3UI();
   if(n===4) renderS4();
+  if(n===6) stampDateTime();
   if(n===8) startTimer();
 }
 
@@ -1062,6 +1063,13 @@ document.addEventListener('DOMContentLoaded', function(){
    DASHBOARD TIMER
 ═══════════════════════════════════════ */
 let timerInterval;
+window.stampDateTime = function(){
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const val = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  document.getElementById('sigDateTime').value = val;
+};
+
 window.toggleOverrideText = function(val){
   const box = document.getElementById('overrideText');
   box.style.display = val === '__other__' ? 'block' : 'none';
