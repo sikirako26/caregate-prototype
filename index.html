@@ -512,12 +512,15 @@ input:focus,select:focus{border-color:#0F6E56}
   <div class="check-row"><input type="checkbox" checked><span>Insurance coverage verified — AARP Plan F active, no prior auth required</span></div>
   <div class="check-row"><input type="checkbox" checked><span>Bed assigned — Room B-214, Wing B, Sunrise SNF, Mar 16 2026</span></div>
   <label style="margin-top:16px">Override / Exception Reason (if applicable)</label>
-  <select>
+  <select id="overrideSelect" onchange="toggleOverrideText(this.value)">
     <option value="">— None required —</option>
     <option>Physician verbal order accepted — written to follow</option>
     <option>CoB resolution in progress — admit pending</option>
     <option>Weekend admission — documentation by next business day</option>
+    <option value="__other__">Other — type reason manually</option>
   </select>
+  <textarea id="overrideText" placeholder="Describe the override reason…" rows="3"
+    style="display:none;margin-top:8px;resize:vertical;border-color:#534AB7"></textarea>
   <div class="sig-row">
     <div style="flex:1"><label>Coordinator Signature</label><input value="J. Martinez, Care Coordinator"></div>
     <div style="width:150px"><label>Date &amp; Time</label><input value="2026-03-15 09:22"></div>
@@ -1059,6 +1062,12 @@ document.addEventListener('DOMContentLoaded', function(){
    DASHBOARD TIMER
 ═══════════════════════════════════════ */
 let timerInterval;
+window.toggleOverrideText = function(val){
+  const box = document.getElementById('overrideText');
+  box.style.display = val === '__other__' ? 'block' : 'none';
+  if(val === '__other__') box.focus();
+};
+
 window.startTimer = function(){
   clearInterval(timerInterval);
   let secs=0;
