@@ -227,6 +227,29 @@ input:focus,select:focus{border-color:#0F6E56}
 .pt-card{background:#fff;border-radius:7px;padding:10px 12px;margin-bottom:8px;font-size:.8rem;box-shadow:0 1px 4px rgba(0,0,0,.07)}
 .pt-name{font-weight:700;color:#1a1a2e;margin-bottom:2px}
 .pt-meta{color:#777;font-size:.75rem}
+
+/* ── Audit log panel ── */
+.audit-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200}
+.audit-overlay.open{display:block}
+.audit-panel{position:fixed;top:0;right:0;width:420px;max-width:95vw;height:100vh;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.15);z-index:201;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s ease}
+.audit-panel.open{transform:translateX(0)}
+.audit-panel-head{padding:18px 20px;border-bottom:1px solid #e0e0e8;display:flex;justify-content:space-between;align-items:center}
+.audit-panel-head h2{font-size:1rem;color:#0F6E56;margin:0}
+.audit-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:#888;line-height:1}
+.audit-body{flex:1;overflow-y:auto;padding:16px 20px}
+.audit-entry{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f0f0f0}
+.audit-entry:last-child{border-bottom:none}
+.audit-time{font-size:.75rem;color:#aaa;white-space:nowrap;padding-top:2px;min-width:58px}
+.audit-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.audit-dot.green{background:#0F6E56}
+.audit-dot.amber{background:#e0a000}
+.audit-dot.red{background:#c0392b}
+.audit-dot.grey{background:#aaa}
+.audit-text{font-size:.82rem;color:#333;line-height:1.5}
+.audit-text b{color:#1a1a2e}
+.audit-badge{font-size:.7rem;font-weight:700;padding:1px 7px;border-radius:8px;margin-left:6px}
+.audit-badge.system{background:#e8f0ee;color:#0F6E56}
+.audit-badge.user{background:#e8e8f8;color:#534AB7}
 </style>
 </head>
 <body>
@@ -242,8 +265,8 @@ input:focus,select:focus{border-color:#0F6E56}
   </div>
   <div class="topbar-right">
     <div class="audit-link" onclick="window.go(8)" title="Go to Referral Dashboard">&#9783; Dashboard</div>
-    <div class="audit-link">&#128203; Audit Logs</div>
-    <div><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e3808c8c91878a8d82978c91a390968d918a9086908d85cd8c9184">[email&#160;protected]</a></div>
+    <div class="audit-link" onclick="openAuditLog()">&#128203; Audit Logs</div>
+    <div style="font-size:.82rem;color:#555">&#128100; J. Martinez &nbsp;<span style="color:#aaa">|</span>&nbsp; Care Coordinator</div>
   </div>
 </div>
 
@@ -991,6 +1014,59 @@ window.startTimer = function(){
     el.textContent=String(Math.floor(secs/60)).padStart(2,'0')+':'+String(secs%60).padStart(2,'0');
   },1000);
 };
+
+// ── Audit log panel ──────────────────────────────────────────────────────────
+const AUDIT_ENTRIES = [
+  {dot:'grey',  text:'Session started — <b>J. Martinez</b>, Care Coordinator', badge:'user',   offset: 0},
+  {dot:'grey',  text:'Navigated to Patient Search', badge:'user',   offset: 12},
+  {dot:'green', text:'Patient record loaded — <b>Margaret Okafor</b> · MRN-00429', badge:'system', offset: 34},
+  {dot:'grey',  text:'Intake form reviewed and confirmed', badge:'user',   offset: 67},
+  {dot:'green', text:'Eligibility check initiated — scenario: Fully Eligible', badge:'system', offset: 80},
+  {dot:'green', text:'CMS Medicare Part A — <b>PASS</b> · 3 inpatient nights confirmed', badge:'system', offset: 95},
+  {dot:'green', text:'AMD Physician order — <b>PASS</b> · Dr. Patel signed Mar 14', badge:'system', offset: 101},
+  {dot:'green', text:'Insurance (AARP Plan F) — <b>PASS</b> · No prior auth required', badge:'system', offset: 112},
+  {dot:'green', text:'PCC Bed availability — <b>PASS</b> · Wing B Room 214', badge:'system', offset: 118},
+  {dot:'green', text:'Eligibility verdict: <b>ELIGIBLE</b> — high confidence', badge:'system', offset: 119},
+  {dot:'grey',  text:'Bed B-214 selected and confirmed', badge:'user',   offset: 145},
+  {dot:'grey',  text:'Admission Final Review opened', badge:'user',   offset: 178},
+  {dot:'grey',  text:'All 6 review criteria checked', badge:'user',   offset: 203},
+  {dot:'green', text:'Coordinator signature applied — <b>J. Martinez</b>', badge:'user',   offset: 221},
+  {dot:'green', text:'Admission approved — ref <b>ADM-2026-0042</b>', badge:'system', offset: 222},
+  {dot:'green', text:'Audit record written — Log ID: <b>CG-LOG-00914</b>', badge:'system', offset: 223},
+];
+
+window.openAuditLog = function(){
+  const body = document.getElementById('auditBody');
+  const now = new Date();
+  body.innerHTML = AUDIT_ENTRIES.map(e => {
+    const t = new Date(now - (223 - e.offset) * 1000);
+    const time = String(t.getHours()).padStart(2,'0') + ':' + String(t.getMinutes()).padStart(2,'0') + ':' + String(t.getSeconds()).padStart(2,'0');
+    return `<div class="audit-entry">
+      <div class="audit-time">${time}</div>
+      <div class="audit-dot ${e.dot}"></div>
+      <div class="audit-text">${e.text}<span class="audit-badge ${e.badge}">${e.badge === 'system' ? 'SYSTEM' : 'USER'}</span></div>
+    </div>`;
+  }).join('');
+  document.getElementById('auditOverlay').classList.add('open');
+  document.getElementById('auditPanel').classList.add('open');
+};
+
+window.closeAuditLog = function(){
+  document.getElementById('auditOverlay').classList.remove('open');
+  document.getElementById('auditPanel').classList.remove('open');
+};
+
 </script>
+
+<!-- Audit log overlay -->
+<div class="audit-overlay" id="auditOverlay" onclick="closeAuditLog()"></div>
+<div class="audit-panel" id="auditPanel">
+  <div class="audit-panel-head">
+    <h2>&#128203; Session Audit Log</h2>
+    <button class="audit-close" onclick="closeAuditLog()">&#x2715;</button>
+  </div>
+  <div class="audit-body" id="auditBody"></div>
+</div>
+
 </body>
 </html>
