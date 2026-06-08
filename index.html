@@ -994,9 +994,9 @@ function renderS4(){
     btn.disabled = false; btn.style.background = ''; btn.textContent = 'Assign Bed →';
   } else if(val === 'action'){
     document.getElementById('s4-actions').innerHTML = `<h3>Action required before proceeding</h3>
-      <div id="s4-checklist" style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" onchange="s4ChecklistChanged()"> Contact Dr. Chen's office — obtain signed physician order</label>
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" onchange="s4ChecklistChanged()"> Submit prior auth to UHC for I50.9 (CHF) — call 1-800-555-0190</label>
+      <div id="s4-checklist" style="margin-top:10px">
+        <div class="check-row"><input type="checkbox" id="s4chk1" onchange="s4ChecklistChanged()"><label for="s4chk1" style="margin:0;font-weight:500;cursor:pointer">Contact Dr. Chen's office — obtain signed physician order</label></div>
+        <div class="check-row"><input type="checkbox" id="s4chk2" onchange="s4ChecklistChanged()"><label for="s4chk2" style="margin:0;font-weight:500;cursor:pointer">Submit prior auth to UHC for I50.9 (CHF) — call 1-800-555-0190</label></div>
       </div>`;
     btn.disabled = true; btn.style.background = '';
     btn.textContent = 'Assign Bed (0/2 resolved)';
