@@ -431,20 +431,10 @@ input:focus,select:focus{border-color:#0F6E56}
 <!-- ══ S4: Results ══ -->
 <div class="card" id="s4" style="display:none">
   <h1>Eligibility Results</h1>
-  <div class="subtitle">Margaret Okafor · MRN-00429</div>
-  <div class="verdict eligible">✓ ELIGIBLE — Proceed to Admission</div>
-  <div class="sys-row"><span class="sys-name">CMS — Medicare Part A</span><span class="tag ok">Verified · 3 inpatient nights</span></div>
-  <div class="sys-row"><span class="sys-name">AMD — Physician order</span><span class="tag ok">Signed · Dr. Patel · Mar 14</span></div>
-  <div class="sys-row"><span class="sys-name">Insurance — AARP Plan F</span><span class="tag ok">Active · No prior auth required</span></div>
-  <div class="sys-row"><span class="sys-name">PCC — Bed availability</span><span class="tag ok">Wing B Room 214 · Mar 16</span></div>
-  <div class="action-box">
-    <h3>Next actions</h3>
-    <ul>
-      <li>Proceed to bed assignment — Wing B Room 214 confirmed available</li>
-      <li>Notify transport coordinator at St. Luke's of confirmed admit date</li>
-      <li>AARP Supplement Plan F covers Medicare coinsurance — no patient out-of-pocket</li>
-    </ul>
-  </div>
+  <div class="subtitle" id="s4-subtitle"></div>
+  <div id="s4-verdict"></div>
+  <div id="s4-sysrows"></div>
+  <div class="action-box" id="s4-actions"></div>
   <div class="nav">
     <button class="btn btn-secondary" id="btnS4Back">← Back</button>
     <button class="btn btn-primary" id="btnAssignBed">Assign Bed →</button>
@@ -476,7 +466,7 @@ input:focus,select:focus{border-color:#0F6E56}
     </div>
     <div class="bed-meta-card">
       <div class="bmc-icon">&#128197;</div>
-      <div><div class="bmc-label">Ready Date</div><div class="bmc-val">Sun, Mar 16, 2026</div></div>
+      <div><div class="bmc-label">Ready Date</div><div class="bmc-val" id="bedReadyDate"></div></div>
     </div>
   </div>
 
@@ -530,24 +520,26 @@ input:focus,select:focus{border-color:#0F6E56}
   <h1>Admission Final Review</h1>
   <div class="subtitle">Review AI reasoning and approve or override before admission proceeds</div>
   <div class="reason-box">
-    Patient meets the 3-day qualifying inpatient hospital stay requirement (admitted Mar 12, discharged Mar 15 — all 3 nights classified as INPATIENT, not observation). Medicare Part A active with open benefit period through December 2026. ICD-10 S72.001A (right femoral neck fracture) supports skilled rehabilitation level of care. AARP Supplement Plan F covers Medicare coinsurance — no prior authorization required. Bed B-214 Wing B confirmed available on requested admit date of March 16, 2026.
+    Patient meets the 3-day qualifying inpatient hospital stay requirement. Medicare Part A active with open benefit period through December 2026. ICD-10 S72.001A (right femoral neck fracture) supports skilled rehabilitation level of care. AARP Supplement Plan F covers Medicare coinsurance — no prior authorization required. Bed B-214 Wing B confirmed available on requested admit date.
   </div>
   <div class="check-row"><input type="checkbox" checked><span>3 confirmed inpatient nights — qualifying stay met (Medicare 3-night rule)</span></div>
   <div class="check-row"><input type="checkbox" checked><span>Medicare Part A coverage active — benefit period open through Dec 2026</span></div>
   <div class="check-row"><input type="checkbox" checked><span>Skilled care medical necessity documented — PT/OT post hip fracture qualifies</span></div>
-  <div class="check-row"><input type="checkbox" checked><span>Physician order signed — Dr. Patel, NPI 1234567890, dated Mar 14</span></div>
+  <div class="check-row"><input type="checkbox" checked><span>Physician order signed — Dr. Patel, NPI 1234567890</span></div>
   <div class="check-row"><input type="checkbox" checked><span>Insurance coverage verified — AARP Plan F active, no prior auth required</span></div>
-  <div class="check-row"><input type="checkbox" checked><span>Bed assigned — Room B-214, Wing B, Sunrise SNF, Mar 16 2026</span></div>
+  <div class="check-row"><input type="checkbox" checked><span>Bed assigned — Room B-214, Wing B, Sunrise SNF</span></div>
   <label style="margin-top:16px">Override / Exception Reason (if applicable)</label>
-  <select>
+  <select id="overrideSelect" onchange="toggleOverrideText(this.value)">
     <option value="">— None required —</option>
     <option>Physician verbal order accepted — written to follow</option>
     <option>CoB resolution in progress — admit pending</option>
     <option>Weekend admission — documentation by next business day</option>
+    <option value="__other__">Other — type reason manually</option>
   </select>
+  <textarea id="overrideText" style="display:none;margin-top:8px;width:100%;padding:8px;border:1px solid #d0d0e0;border-radius:6px;font-size:.85rem;resize:vertical" rows="3" placeholder="Enter override reason..."></textarea>
   <div class="sig-row">
     <div style="flex:1"><label>Coordinator Signature</label><input value="J. Martinez, Care Coordinator"></div>
-    <div style="width:150px"><label>Date &amp; Time</label><input value="2026-03-15 09:22"></div>
+    <div style="width:170px"><label>Date &amp; Time</label><input id="sigDateTime" readonly></div>
   </div>
   <div class="nav">
     <button class="btn btn-secondary" id="btnS6Back">← Back</button>
@@ -563,13 +555,13 @@ input:focus,select:focus{border-color:#0F6E56}
   <div class="audit">
     <div><span>Patient:</span> Margaret Anne Okafor</div>
     <div><span>MRN:</span> MRN-00429</div>
-    <div><span>Admission Date:</span> March 16, 2026</div>
+    <div><span>Admission Date:</span> <span id="confirmAdmitDate">—</span></div>
     <div><span>Bed Assigned:</span> Room B-214, Wing B — Rehabilitation Unit</div>
     <div><span>Care Level:</span> Skilled Nursing — Rehabilitation (PT/OT)</div>
     <div><span>Payer:</span> Medicare Part A · AARP Supplement Plan F</div>
     <div><span>Approved By:</span> J. Martinez, Care Coordinator</div>
-    <div><span>AI Eligibility Run:</span> 2026-03-15 09:14:32 UTC</div>
-    <div><span>HITL Review Completed:</span> 2026-03-15 09:22:07 UTC</div>
+    <div><span>AI Eligibility Run:</span> <span id="confirmEligRun">—</span></div>
+    <div><span>HITL Review Completed:</span> <span id="confirmHITL">—</span></div>
     <div><span>Audit Log ID:</span> CG-LOG-20260315-00914</div>
   </div>
   <div class="finalize-row">
@@ -661,6 +653,10 @@ window.go = function(n){
   }
 
   if(n===3) resetS3UI();
+  if(n===4) renderS4();
+  if(n===5) stampBedDate();
+  if(n===6) stampDateTime();
+  if(n===7) stampConfirmDates();
   if(n===8) startTimer();
 }
 
@@ -945,6 +941,120 @@ window.runCheck = function(){
     document.getElementById('runBtn').disabled=false;
   },delay+step);
 }
+
+/* ═══════════════════════════════════════
+   SCREEN 4 — DYNAMIC RESULTS
+═══════════════════════════════════════ */
+const S4_MRN = { eligible:'MRN-00429', action:'MRN-00421', blocked:'MRN-00415' };
+
+const S4_VERDICT = {
+  eligible:{ cls:'eligible', text:'✓ ELIGIBLE — Proceed to Admission' },
+  action:  { cls:'warn',     text:'⚠ ACTION REQUIRED — 2 items need resolution' },
+  blocked: { cls:'blocked',  text:'✗ BLOCKED — Cannot admit at this facility' }
+};
+
+const S4_SYS = {
+  eligible:[
+    {name:'CMS — Medicare Part A',   cls:'ok',   label:'Verified · 3 inpatient nights'},
+    {name:'AMD — Physician order',   cls:'ok',   label:'Signed · Dr. Patel'},
+    {name:'Insurance — AARP Plan F', cls:'ok',   label:'Active · No prior auth required'},
+    {name:'PCC — Bed availability',  cls:'ok',   label:'Wing B Room 214 · available'}
+  ],
+  action:[
+    {name:'CMS — Medicare Part A',   cls:'ok',   label:'Verified · 4 inpatient nights'},
+    {name:'AMD — Physician order',   cls:'warn', label:'UNSIGNED — action required'},
+    {name:'Insurance — UHC PPO',     cls:'warn', label:'Prior auth PENDING'},
+    {name:'PCC — Bed availability',  cls:'ok',   label:'Wing A Room 106 · available'}
+  ],
+  blocked:[
+    {name:'CMS — Medicare Part A',       cls:'ok',   label:'Verified · 5 inpatient nights'},
+    {name:'AMD — Physician order',       cls:'ok',   label:'Signed order on file'},
+    {name:'Insurance — Humana HMO Gold', cls:'fail', label:'LAPSED + Out-of-network'},
+    {name:'PCC — Bed availability',      cls:'ok',   label:'Bed available (moot)'}
+  ]
+};
+
+function renderS4(){
+  const val = document.getElementById('scenarioSelect').value;
+  if(!val) return;
+  const s = SCENARIOS[val];
+  document.getElementById('s4-subtitle').textContent = s.name + ' · ' + S4_MRN[val];
+  const v = S4_VERDICT[val];
+  document.getElementById('s4-verdict').innerHTML = `<div class="verdict ${v.cls}">${v.text}</div>`;
+  document.getElementById('s4-sysrows').innerHTML = S4_SYS[val].map(r=>
+    `<div class="sys-row"><span class="sys-name">${r.name}</span><span class="tag ${r.cls}">${r.label}</span></div>`
+  ).join('');
+  const btn = document.getElementById('btnAssignBed');
+  if(val === 'eligible'){
+    document.getElementById('s4-actions').innerHTML = `<h3>Next actions</h3><ul>
+      <li>Proceed to bed assignment — Wing B Room 214 confirmed available</li>
+      <li>Notify transport coordinator at St. Luke's of confirmed admit date</li>
+      <li>AARP Supplement Plan F covers Medicare coinsurance — no patient out-of-pocket</li>
+    </ul>`;
+    btn.disabled = false; btn.style.background = ''; btn.textContent = 'Assign Bed →';
+  } else if(val === 'action'){
+    document.getElementById('s4-actions').innerHTML = `<h3>Action required before proceeding</h3>
+      <div id="s4-checklist" style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" onchange="s4ChecklistChanged()"> Contact Dr. Chen's office — obtain signed physician order</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" onchange="s4ChecklistChanged()"> Submit prior auth to UHC for I50.9 (CHF) — call 1-800-555-0190</label>
+      </div>`;
+    btn.disabled = true; btn.style.background = '';
+    btn.textContent = 'Assign Bed (0/2 resolved)';
+  } else {
+    document.getElementById('s4-actions').innerHTML = `<h3>Referral required</h3>
+      <p style="color:#c0392b;font-weight:600;margin-bottom:8px">This admission cannot proceed at Sunrise SNF.</p><ul>
+        <li>Coverage lapsed Jan 1 2026 — Humana HMO Gold not active</li>
+        <li>Sunrise SNF is out-of-network for Humana HMO Gold — no OON benefit</li>
+        <li>Refer to Valley SNF (in-network Humana provider)</li>
+      </ul>`;
+    btn.disabled = true; btn.style.background = '#c0392b'; btn.textContent = 'Admission Blocked';
+  }
+}
+
+window.s4ChecklistChanged = function(){
+  const boxes = document.querySelectorAll('#s4-checklist input[type=checkbox]');
+  const allDone = [...boxes].every(b=>b.checked);
+  const btn = document.getElementById('btnAssignBed');
+  btn.disabled = !allDone;
+  btn.textContent = allDone ? 'Assign Bed →' : `Assign Bed (${[...boxes].filter(b=>b.checked).length}/${boxes.length} resolved)`;
+};
+
+window.toggleOverrideText = function(val){
+  document.getElementById('overrideText').style.display = (val === '__other__') ? 'block' : 'none';
+};
+
+/* ═══════════════════════════════════════
+   LIVE DATE STAMPS
+═══════════════════════════════════════ */
+const _pad = n => String(n).padStart(2,'0');
+const _fmtLong = d => d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+const _fmtMed  = d => d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+const _fmtUTC  = d => `${d.getUTCFullYear()}-${_pad(d.getUTCMonth()+1)}-${_pad(d.getUTCDate())} ${_pad(d.getUTCHours())}:${_pad(d.getUTCMinutes())}:${_pad(d.getUTCSeconds())} UTC`;
+const _fmtLocal = d => `${d.getFullYear()}-${_pad(d.getMonth()+1)}-${_pad(d.getDate())} ${_pad(d.getHours())}:${_pad(d.getMinutes())}`;
+
+window.stampBedDate = function(){
+  const d = new Date(); d.setDate(d.getDate()+1);
+  const el = document.getElementById('bedReadyDate');
+  if(el) el.textContent = _fmtLong(d);
+};
+
+window.stampDateTime = function(){
+  const el = document.getElementById('sigDateTime');
+  if(el) el.value = _fmtLocal(new Date());
+};
+
+window.stampConfirmDates = function(){
+  const now = new Date();
+  const admit = new Date(); admit.setDate(admit.getDate()+1);
+  const elig = new Date(now - 8*60*1000);
+  const hitl = new Date(now - 2*60*1000);
+  const ea = document.getElementById('confirmAdmitDate');
+  const ee = document.getElementById('confirmEligRun');
+  const eh = document.getElementById('confirmHITL');
+  if(ea) ea.textContent = _fmtMed(admit);
+  if(ee) ee.textContent = _fmtUTC(elig);
+  if(eh) eh.textContent = _fmtUTC(hitl);
+};
 
 /* ═══════════════════════════════════════
    MODAL
