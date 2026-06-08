@@ -1,62 +1,60 @@
 Field,Value
+--- ADMISSION STATUS ---,
+CareGate verdict,ELIGIBLE
+Confidence,HIGH
+Blockers,None
+Resolvable at facility,TRUE
 --- PATIENT DEMOGRAPHICS ---,
-Full Name,Margaret Anne Okafor
-Date of Birth,3/14/1941
+Full name,Margaret Anne Okafor
+Date of birth,1941-03-14
 Age,85
 Gender,Female
 MRN,MRN-00429
-SSN Last 4,7291
+SSN last 4,7291
 Address,"412 Maple Grove Drive, Springfield, IL 62701"
 Phone,(217) 555-0182
-Emergency Contact,James Okafor (Son) | (217) 555-0194
+Emergency contact,James Okafor (Son) | (217) 555-0194
 --- INSURANCE ---,
-Primary Payer,Medicare Part A
-Medicare Member ID,1EG4-TE5-MK72
-Benefit Period,Open through December 2026
-Secondary Payer,AARP Supplement Plan F
-Secondary Member ID,AARP-8821-OKF
-Prior Auth Required,No
-Patient Copay,$0 (covered by supplement)
+Primary payer,Medicare Part A
+Medicare member ID,1EG4-TE5-MK72
+Benefit period,Open — through December 2026
+Secondary payer,AARP Supplement Plan F
+Secondary member ID,AARP-8821-OKF
+Prior auth required,No
+Patient out-of-pocket,$0 — covered by AARP Supplement Plan F
 --- HOSPITAL STAY ---,
-Referring Facility,"St. Luke's Medical Center, Springfield, IL"
-Admission Date,6/9/2026
-Discharge Date,6/13/2026
-Total Nights,3
-Stay Classification,INPATIENT (all 3 nights - NOT observation)
-Qualifies for SNF Benefit,Yes
+Admitting facility,"St. Luke's Medical Center, Springfield, IL"
+Admission date,2026-06-09
+Discharge date,2026-06-13
+Total nights,4
+Stay classification,INPATIENT — all 4 nights (qualifying stay confirmed)
+Admission type,Emergency — fall resulting in right hip fracture
+Discharge status,Stable — requires skilled nursing and rehabilitation
 --- DIAGNOSIS ---,
 Primary ICD-10,S72.001A
-Primary Diagnosis,"Fracture of unspecified part of neck of right femur, initial encounter"
-Secondary ICD-10 1,I10
-Secondary Diagnosis 1,Essential hypertension
-Secondary ICD-10 2,E11.9
-Secondary Diagnosis 2,Type 2 diabetes mellitus without complications
-Care Level Required,Skilled Nursing Facility - Rehabilitation (PT/OT)
+Primary diagnosis,"Fracture of unspecified part of neck of right femur, initial encounter"
+Secondary 1,I10 — Essential hypertension
+Secondary 2,E11.9 — Type 2 diabetes mellitus without complications
+Care level,Skilled Nursing Facility — Rehabilitation (PT/OT)
 Expected LOS (days),21
+Precautions,Fall risk (high) | Weight-bearing as tolerated right hip | DVT precautions
+Allergies,Penicillin (rash) | Sulfa drugs (unknown reaction)
+Diet,"Regular — diabetic-friendly, low sodium"
 --- PHYSICIAN ORDER ---,
-Ordering Physician,"Dr. Rajesh Patel, MD"
+Ordering physician,"Dr. Rajesh Patel, MD — Orthopedic Surgery"
 Physician NPI,1234567890
-Physician Phone,(217) 555-0901
-Order Date,3/14/2026
-Order Status,SIGNED
+Physician phone,(217) 555-0901 | Fax: (217) 555-0902
+Order date,2026-06-12
+Order status,SIGNED — original on file at St. Luke's Medical Records
+Order details,Admit to SNF for skilled PT/OT rehabilitation following right hip fracture repair.
+Follow-up,Dr. Patel clinic — 4 weeks post-discharge
 --- THERAPIES ---,
-Therapy 1,Physical Therapy (PT)
-PT Frequency,5x/week
-PT Goals,"Gait training, transfers, stair negotiation, hip precautions"
-Therapy 2,Occupational Therapy (OT)
-OT Frequency,5x/week
-OT Goals,"ADL retraining, adaptive equipment, home safety assessment"
-Therapy 3,Skilled Nursing
-Nursing Frequency,Daily
-Nursing Goals,"Wound assessment, medication management, diabetes monitoring"
---- REVIEW NOTES ---,
-Coordinator Notes,"Patient and family in agreement with SNF placement. Alert, oriented x3, motivated. Goal: return home independently."
-Insurance Note,Medicare Part A verified active. No prior auth required. No patient out-of-pocket cost.
-Advance Directive,DNR/DNI on file
+PT,"5x/week — Gait training, transfers, stair negotiation, hip precautions — 21 days"
+OT,"5x/week — ADL retraining, adaptive equipment, home safety — 21 days"
+Skilled Nursing,"Daily — Wound assessment, medication management, diabetes monitoring — 21 days"
 --- REFERRAL META ---,
 Referral ID,SLM-REF-2026-0847
-Referral Date,3/15/2026
-Requested Admit Date,3/16/2026
-Discharge Coordinator,"Linda Park, MSW"
-Coordinator Email,lpark@stlukes.org
-Coordinator Phone,ext. 4412
+Referral date,2026-03-15
+Requested admit date,2026-06-13
+Coordinator,"Linda Park, MSW | lpark@stlukes.org | ext. 4412"
+Urgency,Standard
