@@ -1,7 +1,7 @@
 Field,Value
 --- PATIENT DEMOGRAPHICS ---,
 Full Name,Margaret Anne Okafor
-Date of Birth,1941-03-14
+Date of Birth,3/14/1941
 Age,85
 Gender,Female
 MRN,MRN-00429
@@ -19,8 +19,8 @@ Prior Auth Required,No
 Patient Copay,$0 (covered by supplement)
 --- HOSPITAL STAY ---,
 Referring Facility,"St. Luke's Medical Center, Springfield, IL"
-Admission Date,2026-06-09
-Discharge Date,2026-06-13
+Admission Date,6/9/2026
+Discharge Date,6/13/2026
 Total Nights,3
 Stay Classification,INPATIENT (all 3 nights - NOT observation)
 Qualifies for SNF Benefit,Yes
@@ -37,7 +37,7 @@ Expected LOS (days),21
 Ordering Physician,"Dr. Rajesh Patel, MD"
 Physician NPI,1234567890
 Physician Phone,(217) 555-0901
-Order Date,2026-03-14
+Order Date,3/14/2026
 Order Status,SIGNED
 --- THERAPIES ---,
 Therapy 1,Physical Therapy (PT)
@@ -55,8 +55,8 @@ Insurance Note,Medicare Part A verified active. No prior auth required. No patie
 Advance Directive,DNR/DNI on file
 --- REFERRAL META ---,
 Referral ID,SLM-REF-2026-0847
-Referral Date,2026-03-15
-Requested Admit Date,2026-03-16
+Referral Date,3/15/2026
+Requested Admit Date,3/16/2026
 Discharge Coordinator,"Linda Park, MSW"
 Coordinator Email,lpark@stlukes.org
 Coordinator Phone,ext. 4412
